@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 /**
  * enum values that represent the screens in the app
  */
-enum class AppScreen(
+enum class AppScreens(
     val title: String,
     val icon: ImageVector,
 ) {
@@ -17,7 +17,7 @@ enum class AppScreen(
         icon = Icons.Default.Home,
     ),
     AllSensors(
-        title = "Alle Sensoren",
+        title = "Sensoren",
         icon = Icons.Default.Search,
     ),
 }

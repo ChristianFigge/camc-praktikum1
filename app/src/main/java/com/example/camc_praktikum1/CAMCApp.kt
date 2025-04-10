@@ -37,13 +37,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.camc_praktikum1.ui.screens.AppScreen
+import com.example.camc_praktikum1.ui.screens.AppScreens
 import com.example.camc_praktikum1.ui.screens.HomeScreen
 import com.example.camc_praktikum1.ui.screens.SensorScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-private val HOME_ROUTE = AppScreen.Home.name
+private val HOME_ROUTE = AppScreens.Home.name
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +52,7 @@ fun CAMCApp(
 ) {
     // Get navigation stack & current screen
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = AppScreen.valueOf(
+    val currentScreen = AppScreens.valueOf(
         backStackEntry?.destination?.route ?: HOME_ROUTE
     )
 
@@ -76,7 +76,7 @@ fun CAMCApp(
                     HorizontalDivider()
 
                     // Create menu item for each AppScreen
-                    AppScreen.entries.forEach { screen ->
+                    AppScreens.entries.forEach { screen ->
                         NavigationDrawerItem(
                             label = { Text(screen.title) },
                             selected = false,
@@ -120,7 +120,7 @@ fun CAMCApp(
                 composable(route = HOME_ROUTE) {
                     HomeScreen()
                 }
-                composable(route = AppScreen.AllSensors.name) {
+                composable(route = AppScreens.AllSensors.name) {
                     SensorScreen()
                 }
             }
@@ -132,7 +132,7 @@ fun CAMCApp(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppBar(
-    currentScreen: AppScreen,
+    currentScreen: AppScreens,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     drawerScope: CoroutineScope,
