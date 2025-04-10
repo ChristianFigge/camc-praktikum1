@@ -16,8 +16,8 @@ enum class AppScreen(
         title = "Home",
         icon = Icons.Default.Home,
     ),
-    Sensors(
-        title = "Sensoren",
+    AllSensors(
+        title = "Alle Sensoren",
         icon = Icons.Default.Search,
     ),
 }
