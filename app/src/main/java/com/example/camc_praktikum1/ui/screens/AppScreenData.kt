@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 /**
  * enum values that represent the screens in the app
  */
-enum class AppScreens(
+enum class AppScreenData(
     val title: String,
     val icon: ImageVector,
 ) {
