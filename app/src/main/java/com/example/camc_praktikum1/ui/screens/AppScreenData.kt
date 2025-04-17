@@ -1,6 +1,7 @@
 package com.example.camc_praktikum1.ui.screens
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -17,7 +18,11 @@ enum class AppScreenData(
         icon = Icons.Default.Home,
     ),
     AllSensors(
-        title = "Sensoren",
+        title = "Alle Sensoren",
         icon = Icons.Default.Search,
     ),
+    Data(
+        title = "Daten",
+        icon = Icons.Default.DateRange,
+    )
 }

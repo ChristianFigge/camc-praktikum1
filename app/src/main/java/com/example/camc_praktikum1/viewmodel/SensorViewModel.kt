@@ -1,20 +1,20 @@
 package com.example.camc_praktikum1.viewmodel
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.hardware.Sensor
 import android.hardware.SensorManager
-import androidx.compose.runtime.MutableState
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import com.example.camc_praktikum1.viewmodel.utils.SensorDelay
 import com.example.camc_praktikum1.viewmodel.utils.SensorListener
 import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
 
 
 class SensorViewModel private constructor(
     ctx: Context,
-): ViewModel() {
+):
+    ViewModel()
+{
     companion object { // static in kotlin
         @Volatile
         private var instance: SensorViewModel? = null
@@ -39,13 +39,19 @@ class SensorViewModel private constructor(
      * @param sensorType integer Identifier für den Sensor Typ (z.B. Sensor.TYPE_LIGHT)
      * @param sampleFrequencyMs gewünschte Sample Geschwindigkeit des Sensors in Millisekunden
      */
-    fun registerSensorListener(sensorType : SensorTypeData, sampleFrequencyMs : Int) {
-        val freqUs = sampleFrequencyMs * 1000
+    fun startSensor(sensorType : SensorTypeData) {
+        val delay = sensorType.delayType.value
         sensorManager.registerListener(
             sensorType.listener!!.value,
             sensorManager.getDefaultSensor(sensorType.type_id),
-            freqUs,
-            freqUs
+            delay.id,
+            //freqUs
+        )
+        sensorType.isRunning.value = true
+
+        Log.d(
+            "SensorControlDbg",
+            "Started ${sensorType.name.uppercase()} with ${delay.name.uppercase()} delay"
         )
     }
 
@@ -53,30 +59,13 @@ class SensorViewModel private constructor(
      * Meldet Default-Sensor beim globalen SensorManager ab.
      * @param sensorType integer Identifier für den Sensor Typ (z.B. Sensor.TYPE_LIGHT)
      */
-    fun unregisterSensorListener(sensorType : SensorTypeData) {
+    fun stopSensor(sensorType : SensorTypeData) {
         sensorManager.unregisterListener(sensorType.listener!!.value)
+        sensorType.isRunning.value = false
     }
 
-    // persistence test
-    val test = mutableStateOf("")
-
-    fun getTestString(): String {
-        return test.value
+    fun clearData(sensorType: SensorTypeData) {
+        sensorType.listener!!.value.clearData()
     }
 
-    fun setTestString(strInput: String) {
-        // SENSOR TEST TODO delete
-        if(strInput.contains("q")) {
-            unregisterSensorListener(SensorTypeData.Accelerometer)
-            print("SENSOR LSITENER STOPPED")
-            print("SENSORTYPE:" + SensorTypeData.Accelerometer.listener!!.value)
-        } else if(strInput.contains("s")) {
-            print("SENSORTYPE:" + SensorTypeData.Accelerometer.listener!!.value)
-            registerSensorListener(SensorTypeData.Accelerometer, 200)
-        }
-        else {
-            print("wtf")
-        }
-        test.value += strInput
-    }
 }

@@ -25,19 +25,29 @@ class SensorListener(
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
             when (event.sensor?.type) {
+
                 Sensor.TYPE_ACCELEROMETER -> {
-                    print(
+                    SensorTypeData.Accelerometer.dataString.value =
                         "X: %.2f m/s²\nY: %.2f m/s²\nZ: %.2f m/s²".format(
                             event.values[0],
                             event.values[1],
                             event.values[2],
                             //getMagnitude(event.values)
                         )
-                    )
                 }
-                /*
+
+                Sensor.TYPE_LINEAR_ACCELERATION -> {
+                    SensorTypeData.LinearAccel.dataString.value =
+                        "X: %.2f m/s²\nY: %.2f m/s²\nZ: %.2f m/s²".format(
+                            event.values[0],
+                            event.values[1],
+                            event.values[2],
+                            //getMagnitude(event.values)
+                        )
+                }
+
                 Sensor.TYPE_GYROSCOPE -> {
-                    sensorDataStrings[Sensor.TYPE_GYROSCOPE]?.value =
+                    SensorTypeData.Gyroscope.dataString.value =
                         "X: %.2f deg/s\nY: %.2f deg/s\nZ: %.2f deg/s".format(
                             radToDeg(event.values[0]),
                             radToDeg(event.values[1]),
@@ -46,38 +56,17 @@ class SensorListener(
                         )
                 }
 
-                Sensor.TYPE_ACCELEROMETER -> {
-                    sensorDataStrings[Sensor.TYPE_ACCELEROMETER]?.value =
-                        "X: %.2f m/s²\nY: %.2f m/s²\nZ: %.2f m/s²".format(
-                            event.values[0],
-                            event.values[1],
-                            event.values[2],
-                            //getMagnitude(event.values)
-                        )
-                }
-
-                Sensor.TYPE_LIGHT -> {
-                    sensorDataStrings[Sensor.TYPE_LIGHT]?.value =
-                        "\n${event.values[0].toInt()} lx\n"
-                }
-
                 Sensor.TYPE_MAGNETIC_FIELD -> {
-                    sensorDataStrings[Sensor.TYPE_MAGNETIC_FIELD]?.value =
+                    SensorTypeData.MagneticField.dataString.value =
                         "X: %.2f µT\nY: %.2f µT\nZ: %.2f µT".format(
                             event.values[0],
                             event.values[1],
                             event.values[2]
                         )
                 }
-
-                 */
             }
             super.collectDatum(event)
         }
-
-        //if (this.runDelayedLoop) { // unregister nach 1 readout:
-            //sensorManager.unregisterListener(this)
-        //}
     }
 
     /*** ------------------- UTIL  ----------------------- ***/

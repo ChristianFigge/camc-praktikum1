@@ -38,6 +38,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.camc_praktikum1.ui.screens.AppScreenData
+import com.example.camc_praktikum1.ui.screens.DataScreen
 import com.example.camc_praktikum1.ui.screens.HomeScreen
 import com.example.camc_praktikum1.ui.screens.SensorScreen
 import kotlinx.coroutines.CoroutineScope
@@ -70,7 +71,7 @@ fun CAMCApp(
                 ) {
                     Spacer(Modifier.height(12.dp))
 
-                    // Header (text, image, whatever...)
+                    // Header
                     Text("CAMC Praktikum #1", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
 
                     HorizontalDivider()
@@ -122,6 +123,10 @@ fun CAMCApp(
                 }
                 composable(route = AppScreenData.AllSensors.name) {
                     SensorScreen()
+                }
+
+                composable(route = AppScreenData.Data.name) {
+                    DataScreen()
                 }
             }
 

@@ -1,16 +1,48 @@
 package com.example.camc_praktikum1.viewmodel.utils
 
 import android.hardware.Sensor
+import android.hardware.SensorManager
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+
+
+enum class SensorDelay(
+    val id: Int,
+    val freqMs: Long,
+    val sliderValue: Float
+) {
+    Normal(
+        id= SensorManager.SENSOR_DELAY_NORMAL,
+        freqMs=200,
+        sliderValue=3f
+    ),
+    UI(
+        id= SensorManager.SENSOR_DELAY_UI,
+        freqMs=60,
+        sliderValue=2f
+    ),
+    Game(
+        id= SensorManager.SENSOR_DELAY_GAME,
+        freqMs=20,
+        sliderValue=1f
+    ),
+    Fastest(
+        id= SensorManager.SENSOR_DELAY_FASTEST,
+        freqMs=0,
+        sliderValue=0f
+    )
+}
+
 
 enum class SensorTypeData(
     val type_id: Int,
     val label: String,
+    val dataString: MutableState<String> = mutableStateOf("\nNO DATA YET\n"),
     var listener: MutableState<SensorListener>? = null,
-    val dataString: MutableState<String> = mutableStateOf(""),
-
-    ) {
+    var isRunning: MutableState<Boolean> = mutableStateOf(false),
+    var delayType: MutableState<SensorDelay> = mutableStateOf(SensorDelay.Normal),
+) {
     Accelerometer(
         type_id = Sensor.TYPE_ACCELEROMETER,
         label = "Accelerometer",
