@@ -24,20 +24,6 @@ fun SensorScreen(
     val ctx = LocalContext.current
     val viewModel by remember { mutableStateOf(SensorViewModel.getInstance(ctx))}
 
-    /*
-    // SENSOR TEST todo delete
-    var testRunning by remember { mutableStateOf(false) }
-    if(!testRunning) {
-        viewModel.registerSensorListener(SensorTypeData.Accelerometer, 200)
-        testRunning = true
-    }
-
-     */
-
-    // TEST for Accelerometer
-    // TODO iterate over SensorTypes
-    val accel = SensorTypeData.Accelerometer
-
     Column() {
         SensorTypeData.entries.forEach {
             Spacer(Modifier.height(30.dp))

@@ -3,7 +3,6 @@ package com.example.camc_praktikum1.viewmodel.utils
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 
 

@@ -3,15 +3,11 @@ package com.example.camc_praktikum1.viewmodel.utils
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import androidx.compose.runtime.MutableState
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 class SensorListener(
-    val sensorType: SensorTypeData,
-    //private val sensorDataStrings : MutableMap<Int, MutableState<String>>, // TODO
-    //val sensorManager : SensorManager
+    sensorType: SensorTypeData,
 ) :
     DataCollector(sensorType.name),
     SensorEventListener

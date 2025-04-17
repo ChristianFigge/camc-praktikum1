@@ -5,7 +5,6 @@ import android.hardware.SensorManager
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.camc_praktikum1.viewmodel.utils.SensorDelay
 import com.example.camc_praktikum1.viewmodel.utils.SensorListener
 import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
 
@@ -37,7 +36,6 @@ class SensorViewModel private constructor(
     /**
      * Registriert den Default-Sensor eines Sensor-Typs beim globalen SensorManager.
      * @param sensorType integer Identifier für den Sensor Typ (z.B. Sensor.TYPE_LIGHT)
-     * @param sampleFrequencyMs gewünschte Sample Geschwindigkeit des Sensors in Millisekunden
      */
     fun startSensor(sensorType : SensorTypeData) {
         val delay = sensorType.delayType.value
