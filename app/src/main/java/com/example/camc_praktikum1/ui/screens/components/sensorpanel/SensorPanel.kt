@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.camc_praktikum1.viewmodel.SensorViewModel
 import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
@@ -26,6 +27,7 @@ fun SensorPanel(
     modifier: Modifier = Modifier
 ) {
     val sensorIsRunning by remember { sensorType.isRunning }
+    val ctx = LocalContext.current
 
     Column(
         modifier = modifier
@@ -64,7 +66,7 @@ fun SensorPanel(
             // DELETE
             Button(
                 onClick = {
-                    viewModel.clearData(sensorType)
+                    viewModel.clearData(sensorType, ctx)
                 },
                 content = { Text("Clear Data") },
                 enabled = !sensorIsRunning,
@@ -73,7 +75,7 @@ fun SensorPanel(
             // SAVE
             Button(
                 onClick = {
-                    // TODO save data
+                    viewModel.writeDataToStorage(sensorType, ctx)
                 },
                 content = { Text("Save Data") },
                 enabled = !sensorIsRunning,

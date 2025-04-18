@@ -1,5 +1,6 @@
 package com.example.camc_praktikum1
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,9 +39,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.camc_praktikum1.ui.screens.AppScreenData
-import com.example.camc_praktikum1.ui.screens.DataScreen
+import com.example.camc_praktikum1.ui.screens.DataIndexScreen
 import com.example.camc_praktikum1.ui.screens.HomeScreen
 import com.example.camc_praktikum1.ui.screens.SensorScreen
+import com.example.camc_praktikum1.ui.screens.DataPlotScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -72,23 +74,37 @@ fun CAMCApp(
                     Spacer(Modifier.height(12.dp))
 
                     // Header
-                    Text("CAMC Praktikum #1", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
+                    Box(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Column {
+                            Text(
+                                "CAMC Praktikum",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                            Text("Team Datenkraken",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+                    }
 
                     HorizontalDivider()
 
                     // Create menu item for each AppScreen
                     AppScreenData.entries.forEach { screen ->
-                        NavigationDrawerItem(
-                            label = { Text(screen.title) },
-                            selected = false,
-                            icon = { Icon(screen.icon, contentDescription = null) },
-                            onClick = {
-                                navController.navigate(screen.name)
-                                drawerScope.launch {
-                                    drawerState.close()
+                        if(screen.showInDrawer) {
+                            NavigationDrawerItem(
+                                label = { Text(screen.title) },
+                                selected = false,
+                                icon = { Icon(screen.icon, contentDescription = null) },
+                                onClick = {
+                                    navController.navigate(screen.name)
+                                    drawerScope.launch {
+                                        drawerState.close()
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
@@ -115,7 +131,7 @@ fun CAMCApp(
                 startDestination = HOME_ROUTE,
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    //.verticalScroll(rememberScrollState())
                     .padding(innerPadding)
             ) {
                 composable(route = HOME_ROUTE) {
@@ -124,9 +140,13 @@ fun CAMCApp(
                 composable(route = AppScreenData.AllSensors.name) {
                     SensorScreen()
                 }
-
                 composable(route = AppScreenData.Data.name) {
-                    DataScreen()
+                    DataIndexScreen(
+                        onShowPlotClick = { navController.navigate(AppScreenData.DataPlot.name) }
+                    )
+                }
+                composable(route = AppScreenData.DataPlot.name) {
+                    DataPlotScreen()
                 }
             }
 
