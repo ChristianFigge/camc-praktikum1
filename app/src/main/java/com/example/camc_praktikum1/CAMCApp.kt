@@ -142,7 +142,8 @@ fun CAMCApp(
                 }
                 composable(route = AppScreenData.Data.name) {
                     DataIndexScreen(
-                        onShowPlotClick = { navController.navigate(AppScreenData.DataPlot.name) }
+                        onShowPlotClick = { navController.navigate(AppScreenData.DataPlot.name) },
+                        onGotoSensorsClick = { navController.navigate(AppScreenData.AllSensors.name) }
                     )
                 }
                 composable(route = AppScreenData.DataPlot.name) {
