@@ -41,13 +41,13 @@ fun SensorScreen(
                     content = { Text("Clear All") },
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = {
-                        viewModel.clearAllData(ctx)
+                        viewModel.clearAllData()
                     }
                 )
                 Button(
                     content = { Text("Save All") },
                     modifier = Modifier.padding(horizontal = 10.dp),
-                    onClick = { viewModel.writeAllDataToStorage(ctx) }
+                    onClick = { viewModel.saveAllSensorDataInStorage(ctx) }
                 )
                 Button(
                     content = { Text("Start All") },

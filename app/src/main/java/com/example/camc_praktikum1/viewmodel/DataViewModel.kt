@@ -7,8 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.camc_praktikum1.data.models.DataCollectionMeta
 import com.example.camc_praktikum1.data.models.SensorEventData
-import com.example.camc_praktikum1.viewmodel.utils.DataCollector
-import com.example.camc_praktikum1.data.StorageIO
+import com.example.camc_praktikum1.data.InternalStorage
 
 class DataViewModel private constructor(
     ctx: Context,
@@ -24,10 +23,7 @@ class DataViewModel private constructor(
                 DataViewModel(ctx).also { instance = it }
             }
     }
-
-    //private val _selectedRecordings = MutableStateFlow<List<SensorEventData>>(emptyList())
-    //var selectedRecordings: StateFlow<List<SensorEventData>> = _selectedRecordings.asStateFlow()
-
+    
     private val _selectedMetaData = mutableStateOf<DataCollectionMeta?>(null)
     val selectedMetaData: MutableState<DataCollectionMeta?>
         get() = _selectedMetaData
@@ -37,7 +33,7 @@ class DataViewModel private constructor(
         get() = _data.value
 
     fun readCollectionIndex(ctx: Context): MutableList<DataCollectionMeta> {
-        return DataCollector.readCollectionIndex(ctx)
+        return InternalStorage.readCollectionIndex(ctx)
     }
 
     fun selectData(metaData: DataCollectionMeta, ctx: Context) {
@@ -56,7 +52,7 @@ class DataViewModel private constructor(
         successMsg: String? = "Eintrag gelöscht"
     ) {
         try {
-            StorageIO.deleteRecording(metaData, ctx)
+            InternalStorage.deleteRecording(metaData, ctx)
         } catch(ex: Exception) {
             ex.printStackTrace()
             Toast.makeText(ctx, "Failed to delete file", Toast.LENGTH_LONG).show()
@@ -75,7 +71,7 @@ class DataViewModel private constructor(
     fun loadSelectedData(ctx: Context): List<SensorEventData>? {
         _selectedMetaData.value?.let {
             try {
-                return StorageIO.readSensorRecording(it.fileName, ctx)
+                return InternalStorage.loadRecordingFromFile(it.fileName, ctx)
             } catch(ex: Exception) {
                 ex.printStackTrace()
             }

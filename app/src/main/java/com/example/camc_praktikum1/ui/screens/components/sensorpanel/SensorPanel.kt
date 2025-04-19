@@ -75,7 +75,7 @@ fun SensorPanel(
             // SAVE
             Button(
                 onClick = {
-                    viewModel.writeDataToStorage(sensorType, ctx)
+                    viewModel.saveSensorDataInStorage(sensorType, ctx)
                 },
                 content = { Text("Save Data") },
                 enabled = !sensorIsRunning,

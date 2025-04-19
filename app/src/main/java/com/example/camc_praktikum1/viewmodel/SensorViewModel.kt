@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.camc_praktikum1.viewmodel.utils.SensorListener
 import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
-import java.io.FileNotFoundException
 
 
 class SensorViewModel private constructor(
@@ -77,14 +76,14 @@ class SensorViewModel private constructor(
 
 
     /*** ----------------------------- START I/O ---------------------------- ***/
-    fun writeDataToStorage(
+    fun saveSensorDataInStorage(
         sensorType: SensorTypeData,
         ctx: Context,
         successMsg : String? = "Daten gespeichert",
         cleanUp: Boolean = true
     ) {
         try {
-            sensorType.listener!!.value.writeJsonToStorage(ctx, cleanUp)
+            sensorType.listener!!.value.saveDataInStorage(ctx, cleanUp)
         } catch(e: Exception) {
             Toast.makeText(ctx, "Data saving failed!", Toast.LENGTH_LONG).show()
             e.printStackTrace()
@@ -96,13 +95,19 @@ class SensorViewModel private constructor(
         }
     }
 
-    fun writeAllDataToStorage(
+    fun saveAllSensorDataInStorage(
         ctx : Context,
         successMsg : String? = "Daten gespeichert",
         cleanUp: Boolean = true
     ) {
-        SensorTypeData.entries.forEach {
-            writeDataToStorage(it, ctx, null, cleanUp)
+        try {
+            SensorTypeData.entries.forEach {
+                it.listener!!.value.saveDataInStorage(ctx, cleanUp)
+            }
+        } catch(e: Exception) {
+            Toast.makeText(ctx, "Data saving failed!", Toast.LENGTH_LONG).show()
+            e.printStackTrace()
+            return
         }
 
         successMsg?.let {
@@ -110,29 +115,11 @@ class SensorViewModel private constructor(
         }
     }
 
-    fun readAllDataFromStorage(ctx : Context) : String {
-        val strOut = StringBuilder()
-        SensorTypeData.entries.forEach {
-            strOut.append("${it.name} data:\n\n")
-            try {
-                strOut.append(it.listener!!.value.readJsonFromStorage(ctx) + "\n\n")
-            } catch(e: FileNotFoundException) {
-                strOut.append("File not found.\n\n")
-            }
-        }
-        return strOut.toString()
-    }
-
-    fun clearAllData(ctx : Context) {
+    fun clearAllData() {
         SensorTypeData.entries.forEach {
             it.listener!!.value.clearData()
         }
-        //writeAllDataToStorage(ctx,"Data cleared") // clear json files
     }
-    /*
-    fun readCollectionIndex(ctx: Context): MutableList<DataCollectionMeta> {
-        return DataCollector.readCollectionIndex(ctx)
-    }*/
     /*** ------------------------------ ENDE I/O ---------------------------- ***/
 
 }
