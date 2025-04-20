@@ -4,11 +4,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 
 @Composable
 fun PrintSensorData(
@@ -16,6 +13,16 @@ fun PrintSensorData(
     dataString: MutableState<String>?,
     modifier: Modifier = Modifier
 ) {
+    Text(
+        label,
+        textDecoration = TextDecoration.Underline,
+    )
+    Text(
+        "${dataString?.value}",
+        textAlign = TextAlign.Center,
+    )
+
+    /*
     Text(
         text = buildAnnotatedString {
             withStyle(
@@ -30,4 +37,6 @@ fun PrintSensorData(
         textAlign = TextAlign.Center,
         modifier = modifier,
     )
+
+     */
 }

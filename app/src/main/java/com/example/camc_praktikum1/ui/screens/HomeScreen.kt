@@ -4,15 +4,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+
 
 @Composable
 fun HomeScreen(
@@ -23,20 +26,26 @@ fun HomeScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
+        modifier = Modifier.verticalScroll(rememberScrollState()),
     ) {
         Text(
             "Context-Aware\nund Mobile Computing",
             textAlign = TextAlign.Center,
-            style= MaterialTheme.typography.titleLarge)
+            fontWeight = FontWeight.Medium,
+            style= MaterialTheme.typography.titleLarge
+        )
         Text("Sommersemester 2025",
             textAlign = TextAlign.Center,
-            style= MaterialTheme.typography.titleSmall)
+            //style= MaterialTheme.typography.titleMedium
+        )
 
         Spacer(Modifier.height(30.dp))
 
         Text("Entwickelt von:",
-            textDecoration = TextDecoration.Underline,
-            style= MaterialTheme.typography.titleMedium)
+            fontWeight = FontWeight.Bold,
+            //textDecoration = TextDecoration.Underline,
+            //style= MaterialTheme.typography.titleMedium
+        )
         Text(
             "Theo Andrup\n" +
             "Christian Figge\n" +
@@ -49,14 +58,16 @@ fun HomeScreen(
         Text("")
 
         Text("Tools:",
-            textDecoration = TextDecoration.Underline,
-            style= MaterialTheme.typography.titleMedium)
+            fontWeight = FontWeight.Bold,
+            //textDecoration = TextDecoration.Underline,
+            //style= MaterialTheme.typography.titleMedium
+        )
         Text(
-            "Kotlin und JetPack Compose",
+            "Kotlin und Jetpack Compose",
             textAlign = TextAlign.Center
         )
 
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(40.dp))
 
         Button(
             content = { Text("Zu den Sensoren") },
