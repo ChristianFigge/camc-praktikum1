@@ -45,6 +45,7 @@ import com.example.camc_praktikum1.ui.screens.DataIndexScreen
 import com.example.camc_praktikum1.ui.screens.HomeScreen
 import com.example.camc_praktikum1.ui.screens.AllSensorsScreen
 import com.example.camc_praktikum1.ui.screens.DataPlotScreen
+import com.example.camc_praktikum1.viewmodel.SensorViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -55,6 +56,9 @@ private val HOME_ROUTE = AppScreenData.Home.name
 fun CAMCApp(
     navController: NavHostController = rememberNavController()
 ) {
+    // preload sensorListeners in SensorViewModel singleton:
+    SensorViewModel.getInstance(navController.context)
+
     // Get navigation stack & current screen
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = AppScreenData.valueOf(

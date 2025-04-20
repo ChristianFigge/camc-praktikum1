@@ -22,42 +22,40 @@ class SensorListener(
 
                 Sensor.TYPE_ACCELEROMETER -> {
                     SensorTypeData.Accelerometer.dataString.value =
-                        "X: %.2f m/s²\nY: %.2f m/s²\nZ: %.2f m/s²".format(
-                            event.values[0],
-                            event.values[1],
-                            event.values[2],
-                            //getMagnitude(event.values)
-                        )
+                        buildDatastring(event.values, "m/s²")
                 }
 
                 Sensor.TYPE_LINEAR_ACCELERATION -> {
                     SensorTypeData.LinearAccel.dataString.value =
-                        "X: %.2f m/s²\nY: %.2f m/s²\nZ: %.2f m/s²".format(
-                            event.values[0],
-                            event.values[1],
-                            event.values[2],
-                            //getMagnitude(event.values)
-                        )
+                        buildDatastring(event.values, "m/s²")
                 }
 
                 Sensor.TYPE_GYROSCOPE -> {
                     SensorTypeData.Gyroscope.dataString.value =
-                        "X: %.2f deg/s\nY: %.2f deg/s\nZ: %.2f deg/s".format(
-                            radToDeg(event.values[0]),
-                            radToDeg(event.values[1]),
-                            radToDeg(event.values[2]),
-                            //radToDeg(getMagnitude(event.values))
-                        )
+                        buildDatastring(event.values, "deg/s", {f -> radToDeg(f)})
                 }
 
                 Sensor.TYPE_MAGNETIC_FIELD -> {
                     SensorTypeData.MagneticField.dataString.value =
-                        "X: %.2f µT\nY: %.2f µT\nZ: %.2f µT".format(
-                            event.values[0],
-                            event.values[1],
-                            event.values[2]
-                        )
+                        buildDatastring(event.values, "µT")
                 }
+
+                Sensor.TYPE_GRAVITY -> {
+                    SensorTypeData.Gravity.dataString.value =
+                        buildDatastring(event.values, "m/s²")
+                }
+
+                Sensor.TYPE_ROTATION_VECTOR -> {
+                    SensorTypeData.Rotation.dataString.value =
+                        buildDatastring(event.values, "") // no unit according to docs
+                }
+
+                Sensor.TYPE_ORIENTATION -> {
+                    SensorTypeData.Orientation.dataString.value =
+                        buildDatastring(event.values, "deg")
+                }
+
+
             }
             super.collectDatum(event)
         }
@@ -65,12 +63,27 @@ class SensorListener(
 
     /*** ------------------- UTIL  ----------------------- ***/
 
+    private inline fun buildDatastring(
+        values: FloatArray,
+        unit: String,
+        conversionFnc: (Float) -> Float = { f -> f },
+        decimalPlaces: Int = 2,
+    ): String {
+        val dp = decimalPlaces.toString()
+        return "X: %.${dp}f $unit\nY: %.${dp}f $unit\nZ: %.${dp}f $unit".format(
+            conversionFnc(values[0]),
+            conversionFnc(values[1]),
+            conversionFnc(values[2]),
+            //getMagnitude(event.values)
+        )
+    }
+
     /**
      * Berechnet die Magnitude für gegebene (Sensor-)Werte.
      * @param values array mit den Werten
      * @return Wurzel der Quadratsumme der Werte
      */
-    private fun getMagnitude(values: FloatArray): Float {
+    private inline fun getMagnitude(values: FloatArray): Float {
         var result = 0.0f
         values.forEach { result += it.pow(2) }
         return sqrt(result)
@@ -81,7 +94,7 @@ class SensorListener(
      * @param rad der Radians Wert
      * @return der entsprechende Grad Wert
      */
-    private fun radToDeg(rad: Float): Double {
-        return rad * 180 / Math.PI
+    private inline fun radToDeg(rad: Float): Float {
+        return (rad * 180 / Math.PI).toFloat()
     }
 }

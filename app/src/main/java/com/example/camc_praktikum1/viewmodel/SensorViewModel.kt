@@ -35,6 +35,10 @@ class SensorViewModel private constructor(
     init {
         SensorTypeData.entries.forEach { type ->
             type.listener = mutableStateOf(SensorListener(type))
+
+            Log.d(
+                "SensorControlDbg",
+                "Initialized ${type.name.uppercase()} Listener")
         }
     }
 

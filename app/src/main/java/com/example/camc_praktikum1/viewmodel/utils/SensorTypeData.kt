@@ -47,6 +47,10 @@ enum class SensorTypeData(
         type_id = Sensor.TYPE_ACCELEROMETER,
         label = "Accelerometer",
     ),
+    Gravity(
+        type_id = Sensor.TYPE_GRAVITY,
+        label = "Gravitation",
+    ),
     LinearAccel(
         type_id = Sensor.TYPE_LINEAR_ACCELERATION,
         label = "Lineare Beschleunigung",
@@ -58,5 +62,13 @@ enum class SensorTypeData(
     MagneticField(
         type_id = Sensor.TYPE_MAGNETIC_FIELD,
         label = "Magnetfeld"
-    )
+    ),
+    Rotation(
+        type_id = Sensor.TYPE_ROTATION_VECTOR,
+        label = "Geräte-Rotation"
+    ),
+    Orientation(
+        type_id = Sensor.TYPE_ORIENTATION,
+        label = "Geräte-Orientierung (ALT)"
+    ),
 }
