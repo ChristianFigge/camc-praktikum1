@@ -41,7 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.camc_praktikum1.ui.screens.AppScreenData
 import com.example.camc_praktikum1.ui.screens.DataIndexScreen
 import com.example.camc_praktikum1.ui.screens.HomeScreen
-import com.example.camc_praktikum1.ui.screens.SensorScreen
+import com.example.camc_praktikum1.ui.screens.AllSensorsScreen
 import com.example.camc_praktikum1.ui.screens.DataPlotScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -138,7 +138,7 @@ fun CAMCApp(
                     HomeScreen()
                 }
                 composable(route = AppScreenData.AllSensors.name) {
-                    SensorScreen()
+                    AllSensorsScreen()
                 }
                 composable(route = AppScreenData.Data.name) {
                     DataIndexScreen(

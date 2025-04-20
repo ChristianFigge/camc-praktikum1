@@ -9,11 +9,9 @@ import kotlin.math.sqrt
 class SensorListener(
     sensorType: SensorTypeData,
 ) :
-    DataCollector(sensorType.name),
+    DataCollector(sensorType),
     SensorEventListener
 {
-    //var runDelayedLoop : Boolean = false
-
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         // kann leer sein, muss aber implementiert werden
     }

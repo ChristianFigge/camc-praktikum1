@@ -4,6 +4,7 @@ import android.content.Context
 import android.hardware.SensorManager
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.camc_praktikum1.viewmodel.utils.SensorListener
@@ -26,6 +27,9 @@ class SensorViewModel private constructor(
     }
 
     private var sensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    private val runningFlags = mutableIntStateOf(0)
+    val noSensorIsRunning: Boolean
+        get() = runningFlags.intValue == 0
 
     init {
         SensorTypeData.entries.forEach { type ->
@@ -48,6 +52,9 @@ class SensorViewModel private constructor(
         )
         sensorType.isRunning.value = true
 
+        // set running flag
+        runningFlags.intValue = runningFlags.intValue or (1 shl sensorType.ordinal)
+
         Log.d(
             "SensorControlDbg",
             "Started ${sensorType.name.uppercase()} with ${delay.name.uppercase()} delay"
@@ -61,6 +68,10 @@ class SensorViewModel private constructor(
     fun stopSensor(sensorType : SensorTypeData) {
         sensorManager.unregisterListener(sensorType.listener!!.value)
         sensorType.isRunning.value = false
+        sensorType.dataString.value = "\n(Angehalten)\n"
+
+        // unset running flag
+        runningFlags.intValue = runningFlags.intValue and (1 shl sensorType.ordinal).inv()
 
         Log.d(
             "SensorControlDbg",
@@ -68,9 +79,20 @@ class SensorViewModel private constructor(
         )
     }
 
-    fun clearData(sensorType: SensorTypeData, ctx: Context) {
+    fun startAllSensors() {
+        SensorTypeData.entries.forEach { startSensor(it) }
+    }
+
+    fun stopAllSensors() {
+        SensorTypeData.entries.forEach { stopSensor(it) }
+    }
+
+    fun clearData(sensorType: SensorTypeData, ctx: Context, toastMsg: String? = "Daten gelöscht") {
         sensorType.listener!!.value.clearData()
-        Toast.makeText(ctx, "${sensorType.label} Daten gelöscht", Toast.LENGTH_SHORT).show()
+
+        toastMsg?.let {
+            Toast.makeText(ctx, "${sensorType.label} $toastMsg", Toast.LENGTH_SHORT).show()
+        }
     }
     /***  ------------------------ ENDE Listener Steuerung ------------------------------ ***/
 
@@ -85,7 +107,7 @@ class SensorViewModel private constructor(
         try {
             sensorType.listener!!.value.saveDataInStorage(ctx, cleanUp)
         } catch(e: Exception) {
-            Toast.makeText(ctx, "Data saving failed!", Toast.LENGTH_LONG).show()
+            Toast.makeText(ctx, "Fehler beim Speichern :(", Toast.LENGTH_LONG).show()
             e.printStackTrace()
             return
         }
@@ -97,27 +119,32 @@ class SensorViewModel private constructor(
 
     fun saveAllSensorDataInStorage(
         ctx : Context,
-        successMsg : String? = "Daten gespeichert",
+        successToastMsg : String? = "Alle Daten gespeichert",
         cleanUp: Boolean = true
     ) {
+        val timeMs = System.currentTimeMillis()
         try {
             SensorTypeData.entries.forEach {
-                it.listener!!.value.saveDataInStorage(ctx, cleanUp)
+                it.listener!!.value.saveDataInStorage(ctx, cleanUp, timeMs)
             }
         } catch(e: Exception) {
-            Toast.makeText(ctx, "Data saving failed!", Toast.LENGTH_LONG).show()
+            Toast.makeText(ctx, "Fehler beim Speichern :(", Toast.LENGTH_LONG).show()
             e.printStackTrace()
             return
         }
 
-        successMsg?.let {
+        successToastMsg?.let {
             Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun clearAllData() {
+    fun clearAllSensorData(ctx: Context, toastMsg: String? = "Alle Daten gelöscht") {
         SensorTypeData.entries.forEach {
             it.listener!!.value.clearData()
+        }
+
+        toastMsg?.let {
+            Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
         }
     }
     /*** ------------------------------ ENDE I/O ---------------------------- ***/

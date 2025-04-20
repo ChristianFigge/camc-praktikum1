@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.camc_praktikum1.ui.screens.components.sensorpanel.SensorPanel
 import com.example.camc_praktikum1.viewmodel.SensorViewModel
@@ -24,12 +25,21 @@ import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
 
 
 @Composable
-fun SensorScreen(
+fun AllSensorsScreen(
     modifier: Modifier = Modifier,
-    //viewModel: SensorViewModel = viewModel(),
 ) {
     val ctx = LocalContext.current
     val viewModel by remember { mutableStateOf(SensorViewModel.getInstance(ctx))}
+
+    // helper fns ( werden geinlined) TODO als mutableState im viewmodel
+    fun anySensorHasData(): Boolean {
+        SensorTypeData.entries.forEach {
+            if(it.listener!!.value.hasData)
+                return true
+        }
+        return false
+    }
+
 
     Column() {
         Column(
@@ -38,27 +48,37 @@ fun SensorScreen(
             Spacer(Modifier.height(20.dp))
             Row() {
                 Button(
-                    content = { Text("Clear All") },
-                    modifier = Modifier.padding(horizontal = 10.dp),
+                    content = { Text("Alle Daten\nlöschen", textAlign= TextAlign.Center) },
+                    onClick = { viewModel.clearAllSensorData(ctx) },
+                    enabled = viewModel.noSensorIsRunning && anySensorHasData(),
+                )
+                Spacer(Modifier.width(10.dp))
+                Button(
+                    content = { Text("Alle Daten\nspeichern", textAlign= TextAlign.Center) },
+                    onClick = { viewModel.saveAllSensorDataInStorage(ctx) },
+                    enabled = viewModel.noSensorIsRunning && anySensorHasData(),
+                )
+                Spacer(Modifier.width(20.dp))
+                Button(
+                    content = {
+                        val btnText =
+                            if(viewModel.noSensorIsRunning) "Sensoren\nstarten"
+                            else "Sensoren\nstoppen"
+                        Text(btnText, textAlign=TextAlign.Center)
+                    },
                     onClick = {
-                        viewModel.clearAllData()
-                    }
-                )
-                Button(
-                    content = { Text("Save All") },
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                    onClick = { viewModel.saveAllSensorDataInStorage(ctx) }
-                )
-                Button(
-                    content = { Text("Start All") },
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                    onClick = { }
+                        if(viewModel.noSensorIsRunning)
+                            viewModel.startAllSensors()
+                        else
+                            viewModel.stopAllSensors()
+                    },
                 )
             }
             Spacer(Modifier.height(20.dp))
             HorizontalDivider(thickness = 2.dp)
         }
 
+        // SENSOR PANELS
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {

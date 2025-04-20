@@ -26,8 +26,9 @@ fun SensorPanel(
     viewModel: SensorViewModel,
     modifier: Modifier = Modifier
 ) {
-    val sensorIsRunning by remember { sensorType.isRunning }
     val ctx = LocalContext.current
+    val sensorIsRunning by remember { sensorType.isRunning }
+    val sensorHasData = sensorType.listener!!.value.hasData
 
     Column(
         modifier = modifier
@@ -38,7 +39,8 @@ fun SensorPanel(
 
         PrintSensorData(sensorType.label, sensorType.dataString)
 
-        Spacer(Modifier.height(20.dp))
+        //Spacer(Modifier.height(20.dp))
+        Text("")
 
         SampleSpeedControl(sensorType)
 
@@ -46,6 +48,7 @@ fun SensorPanel(
 
         //+++++++++++++++++++++ BUTTONS +++++++++++++++++++++++++++
         // START/STOP
+         /*
         Button(
             onClick = {
                 if (!sensorIsRunning) {
@@ -59,8 +62,11 @@ fun SensorPanel(
                 else Text("Stop")
             },
         )
-
         Spacer(Modifier.height(10.dp))
+
+          */
+
+
 
         Row() {
             // DELETE
@@ -68,8 +74,8 @@ fun SensorPanel(
                 onClick = {
                     viewModel.clearData(sensorType, ctx)
                 },
-                content = { Text("Clear Data") },
-                enabled = !sensorIsRunning,
+                content = { Text("Löschen") },
+                enabled = !sensorIsRunning && sensorHasData,
             )
             Spacer(Modifier.width(10.dp))
             // SAVE
@@ -77,8 +83,22 @@ fun SensorPanel(
                 onClick = {
                     viewModel.saveSensorDataInStorage(sensorType, ctx)
                 },
-                content = { Text("Save Data") },
-                enabled = !sensorIsRunning,
+                content = { Text("Speichern") },
+                enabled = !sensorIsRunning && sensorHasData,
+            )
+            Spacer(Modifier.width(20.dp))
+            Button(
+                onClick = {
+                    if (!sensorIsRunning) {
+                        viewModel.startSensor(sensorType)
+                    } else {
+                        viewModel.stopSensor(sensorType)
+                    }
+                },
+                content = {
+                    if (!sensorIsRunning) Text("Start")
+                    else Text("Stop")
+                },
             )
         }
         /*

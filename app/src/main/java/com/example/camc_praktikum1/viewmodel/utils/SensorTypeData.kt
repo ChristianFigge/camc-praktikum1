@@ -33,11 +33,12 @@ enum class SensorDelay(
     )
 }
 
+const val DATASTRING_INIT = "\n(Noch keine Daten)\n"
 
 enum class SensorTypeData(
     val type_id: Int,
     val label: String,
-    val dataString: MutableState<String> = mutableStateOf("\nNO DATA YET\n"),
+    val dataString: MutableState<String> = mutableStateOf(DATASTRING_INIT),
     var listener: MutableState<SensorListener>? = null,
     var isRunning: MutableState<Boolean> = mutableStateOf(false),
     var delayType: MutableState<SensorDelay> = mutableStateOf(SensorDelay.Normal),
