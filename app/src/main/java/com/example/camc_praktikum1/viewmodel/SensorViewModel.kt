@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.camc_praktikum1.viewmodel.utils.SensorListener
 import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
+import com.example.camc_praktikum1.viewmodel.utils.getRecordingSessionId
 
 
 class SensorViewModel private constructor(
@@ -105,7 +106,7 @@ class SensorViewModel private constructor(
         cleanUp: Boolean = true
     ) {
         try {
-            sensorType.listener!!.value.saveDataInStorage(ctx, cleanUp)
+            sensorType.listener!!.value.saveDataInStorage(ctx, cleanUp = cleanUp)
         } catch(e: Exception) {
             Toast.makeText(ctx, "Fehler beim Speichern :(", Toast.LENGTH_LONG).show()
             e.printStackTrace()
@@ -123,9 +124,10 @@ class SensorViewModel private constructor(
         cleanUp: Boolean = true
     ) {
         val timeMs = System.currentTimeMillis()
+        val sessionId = getRecordingSessionId()
         try {
             SensorTypeData.entries.forEach {
-                it.listener!!.value.saveDataInStorage(ctx, cleanUp, timeMs)
+                it.listener!!.value.saveDataInStorage(ctx, timeMs, sessionId, cleanUp)
             }
         } catch(e: Exception) {
             Toast.makeText(ctx, "Fehler beim Speichern :(", Toast.LENGTH_LONG).show()

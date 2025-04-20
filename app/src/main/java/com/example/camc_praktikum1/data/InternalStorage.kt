@@ -1,7 +1,7 @@
 package com.example.camc_praktikum1.data
 
 import android.content.Context
-import com.example.camc_praktikum1.data.models.DataCollectionMeta
+import com.example.camc_praktikum1.data.models.RecordingMetaData
 import com.example.camc_praktikum1.data.models.SensorEventData
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -59,11 +59,11 @@ class InternalStorage {
             IllegalArgumentException::class,
             IOException::class
         )
-        fun deleteRecording(metaData: DataCollectionMeta, ctx: Context) {
+        fun deleteRecordingFromStorage(metaData: RecordingMetaData, ctx: Context) {
             deleteFile(metaData.fileName, ctx)
 
             // Update Data Index
-            val dataIndex = readCollectionIndex(ctx)
+            val dataIndex = readRecordingIndex(ctx)
             val idx_to_delete = mutableListOf<Int>()
 
             // kann zwar theoretisch nur 1 Eintrag existieren aber was soll der geiz
@@ -73,22 +73,22 @@ class InternalStorage {
                 }
             }
             idx_to_delete.forEach { dataIndex.removeAt(it) }
-            updateCollectionIndex(dataIndex, ctx)
+            updateRecordingIndex(dataIndex, ctx)
         }
 
         @Throws(FileNotFoundException::class, SerializationException::class, IllegalArgumentException::class)
-        fun readCollectionIndex(ctx: Context): MutableList<DataCollectionMeta> {
+        fun readRecordingIndex(ctx: Context): MutableList<RecordingMetaData> {
             try {
                 val fileContent: String = readTextFile(INDEX_FILENAME, ctx)
                 return Json.decodeFromString(fileContent)
             } catch (fileEx: FileNotFoundException) {
                 //pass
             }
-            return mutableListOf<DataCollectionMeta>()
+            return mutableListOf<RecordingMetaData>()
         }
 
         @Throws(SerializationException::class, FileNotFoundException::class, IOException::class)
-        fun updateCollectionIndex(newCollectionIndex: List<DataCollectionMeta>, ctx: Context) {
+        fun updateRecordingIndex(newCollectionIndex: List<RecordingMetaData>, ctx: Context) {
             saveDataAsJsonFile(newCollectionIndex, INDEX_FILENAME, ctx)
         }
     }

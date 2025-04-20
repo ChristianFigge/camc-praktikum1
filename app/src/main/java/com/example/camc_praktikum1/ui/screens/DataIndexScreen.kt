@@ -1,5 +1,6 @@
 package com.example.camc_praktikum1.ui.screens
 
+import android.icu.text.SimpleDateFormat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,8 +26,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.camc_praktikum1.data.models.DataCollectionMeta
+import com.example.camc_praktikum1.data.models.RecordingMetaData
 import com.example.camc_praktikum1.viewmodel.DataViewModel
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun DataIndexScreen(
@@ -37,13 +40,13 @@ fun DataIndexScreen(
     val ctx = LocalContext.current
     val viewModel by remember { mutableStateOf(DataViewModel.getInstance()) }
     var selectedMetaData by remember { viewModel.selectedMetaData }
+    val sdf = SimpleDateFormat("dd.MM.yy HH:mm:ss", Locale.getDefault())
 
     // Helper fncs:
-    fun getCollectionIndex(): List<DataCollectionMeta> {
-        return viewModel.readCollectionIndex(ctx).asReversed().toList()
+    fun getRecordingIndex(): List<RecordingMetaData> {
+        return viewModel.readRecordingIndex(ctx).asReversed().toList()
     }
-
-    var collectionIndex by remember { mutableStateOf(getCollectionIndex()) }
+    var collectionIndex by remember { mutableStateOf(getRecordingIndex()) }
 
     if(collectionIndex.isEmpty()) {
         Column(
@@ -80,9 +83,9 @@ fun DataIndexScreen(
                     enabled = selectedMetaData != null,
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = {
-                        viewModel.deleteData(selectedMetaData!!, ctx)
+                        viewModel.deleteRecordingFromStorage(selectedMetaData!!, ctx)
                         // refresh view
-                        collectionIndex = getCollectionIndex()
+                        collectionIndex = getRecordingIndex()
                     }
                 )
                 Button(
@@ -111,17 +114,17 @@ fun DataIndexScreen(
                     )
                     Column() {
                         Text(
-                            it.sensorName + ", " + it.createdAt,
+                            it.sensorName + ", " + sdf.format(Date(it.createdAt)),
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            "(${it.size} Events in ${it.durationMs} ms)",
+                            "(${it.size} Events in ${it.durationMs} ms)\n" +
+                            "SessionId: " + it.sessionId,
                             style = MaterialTheme.typography.labelLarge
                         )
                     }
                 }
-
-
+                Spacer(Modifier.height(10.dp))
             }
         }
     }

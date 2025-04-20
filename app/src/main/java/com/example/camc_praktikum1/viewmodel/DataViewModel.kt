@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.camc_praktikum1.data.models.DataCollectionMeta
+import com.example.camc_praktikum1.data.models.RecordingMetaData
 import com.example.camc_praktikum1.data.models.SensorEventData
 import com.example.camc_praktikum1.data.InternalStorage
 
@@ -23,16 +23,16 @@ class DataViewModel private constructor(
             }
     }
     
-    private val _selectedMetaData = mutableStateOf<DataCollectionMeta?>(null)
-    val selectedMetaData: MutableState<DataCollectionMeta?>
+    private val _selectedMetaData = mutableStateOf<RecordingMetaData?>(null)
+    val selectedMetaData: MutableState<RecordingMetaData?>
         get() = _selectedMetaData
 
 
-    fun readCollectionIndex(ctx: Context): MutableList<DataCollectionMeta> {
-        return InternalStorage.readCollectionIndex(ctx)
+    fun readRecordingIndex(ctx: Context): MutableList<RecordingMetaData> {
+        return InternalStorage.readRecordingIndex(ctx)
     }
 
-    fun selectData(metaData: DataCollectionMeta) {
+    fun selectData(metaData: RecordingMetaData) {
         _selectedMetaData.value = metaData
     }
 
@@ -40,13 +40,13 @@ class DataViewModel private constructor(
         _selectedMetaData.value = null
     }
 
-    fun deleteData(
-        metaData: DataCollectionMeta,
+    fun deleteRecordingFromStorage(
+        metaData: RecordingMetaData,
         ctx: Context,
         successMsg: String? = "Eintrag gelöscht"
     ) {
         try {
-            InternalStorage.deleteRecording(metaData, ctx)
+            InternalStorage.deleteRecordingFromStorage(metaData, ctx)
         } catch(ex: Exception) {
             ex.printStackTrace()
             Toast.makeText(ctx, "Failed to delete file", Toast.LENGTH_LONG).show()
@@ -62,7 +62,7 @@ class DataViewModel private constructor(
         }
     }
 
-    fun loadRecordingFromFile(metaData: DataCollectionMeta?, ctx: Context): List<SensorEventData>? {
+    fun loadRecordingFromFile(metaData: RecordingMetaData?, ctx: Context): List<SensorEventData>? {
         metaData?.let {
             try {
                 return InternalStorage.loadRecordingFromFile(it.fileName, ctx)
