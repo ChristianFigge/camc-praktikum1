@@ -82,7 +82,7 @@ fun CAMCApp(
                                 "CAMC Praktikum",
                                 style = MaterialTheme.typography.titleLarge
                             )
-                            Text("Team Datenkraken",
+                            Text("© Datenkraken, 2025",
                                 style = MaterialTheme.typography.labelLarge
                             )
                         }
@@ -134,8 +134,11 @@ fun CAMCApp(
                     //.verticalScroll(rememberScrollState())
                     .padding(innerPadding)
             ) {
-                composable(route = HOME_ROUTE) {
-                    HomeScreen()
+                composable(route = AppScreenData.Home.name) {
+                    HomeScreen(
+                        onGotoSensorsClick = { navController.navigate(AppScreenData.AllSensors.name) },
+                        onGotoDataClick = { navController.navigate(AppScreenData.Data.name) }
+                    )
                 }
                 composable(route = AppScreenData.AllSensors.name) {
                     AllSensorsScreen()
