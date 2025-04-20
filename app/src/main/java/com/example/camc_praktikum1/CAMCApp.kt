@@ -27,10 +27,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -112,6 +114,7 @@ fun CAMCApp(
         drawerState = drawerState
     ) {
         // Screen content (shown indirectly via NavHost below)
+        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
         Scaffold(
             topBar = {
                 MyAppBar(
@@ -120,9 +123,12 @@ fun CAMCApp(
                     navigateUp = { navController.navigateUp() },
                     drawerScope = drawerScope,
                     drawerState = drawerState,
+                    scrollBehavior = scrollBehavior,
                 )
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) { innerPadding ->
 
             // NavHost defines screen routes and start screen
