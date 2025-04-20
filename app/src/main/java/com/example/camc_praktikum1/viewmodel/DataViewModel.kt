@@ -10,7 +10,6 @@ import com.example.camc_praktikum1.data.models.SensorEventData
 import com.example.camc_praktikum1.data.InternalStorage
 
 class DataViewModel private constructor(
-    ctx: Context,
 ):
     ViewModel()
 {
@@ -18,9 +17,9 @@ class DataViewModel private constructor(
         @Volatile
         private var instance: DataViewModel? = null
 
-        fun getInstance(ctx: Context) =
+        fun getInstance() =
             instance ?: synchronized(this) {
-                DataViewModel(ctx).also { instance = it }
+                DataViewModel().also { instance = it }
             }
     }
     
@@ -28,22 +27,17 @@ class DataViewModel private constructor(
     val selectedMetaData: MutableState<DataCollectionMeta?>
         get() = _selectedMetaData
 
-    private val _data = mutableStateOf(listOf<SensorEventData>())
-    val selectedData: List<SensorEventData>
-        get() = _data.value
 
     fun readCollectionIndex(ctx: Context): MutableList<DataCollectionMeta> {
         return InternalStorage.readCollectionIndex(ctx)
     }
 
-    fun selectData(metaData: DataCollectionMeta, ctx: Context) {
+    fun selectData(metaData: DataCollectionMeta) {
         _selectedMetaData.value = metaData
-        loadSelectedData(ctx)?.let { _data.value = it }
     }
 
     fun deselectData() {
         _selectedMetaData.value = null
-        _data.value = listOf<SensorEventData>()
     }
 
     fun deleteData(
@@ -68,11 +62,11 @@ class DataViewModel private constructor(
         }
     }
 
-    fun loadSelectedData(ctx: Context): List<SensorEventData>? {
-        _selectedMetaData.value?.let {
+    fun loadRecordingFromFile(metaData: DataCollectionMeta?, ctx: Context): List<SensorEventData>? {
+        metaData?.let {
             try {
                 return InternalStorage.loadRecordingFromFile(it.fileName, ctx)
-            } catch(ex: Exception) {
+            } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }

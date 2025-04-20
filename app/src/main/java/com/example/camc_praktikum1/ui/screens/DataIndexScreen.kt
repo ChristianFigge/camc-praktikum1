@@ -35,7 +35,7 @@ fun DataIndexScreen(
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
-    val viewModel by remember { mutableStateOf(DataViewModel.getInstance(ctx)) }
+    val viewModel by remember { mutableStateOf(DataViewModel.getInstance()) }
     var selectedMetaData by remember { viewModel.selectedMetaData }
 
     // Helper fncs:
@@ -106,7 +106,7 @@ fun DataIndexScreen(
                     RadioButton(
                         selected = selectedMetaData == it,
                         onClick = {
-                            viewModel.selectData(it, ctx)
+                            viewModel.selectData(it)
                         }
                     )
                     Column() {
