@@ -22,37 +22,37 @@ class SensorListener(
 
                 Sensor.TYPE_ACCELEROMETER -> {
                     SensorTypeData.Accelerometer.dataString.value =
-                        buildDatastring(event.values, "m/s²")
+                        buildDatastringForXYZ(event.values, "m/s²")
                 }
 
                 Sensor.TYPE_LINEAR_ACCELERATION -> {
                     SensorTypeData.LinearAccel.dataString.value =
-                        buildDatastring(event.values, "m/s²")
+                        buildDatastringForXYZ(event.values, "m/s²")
                 }
 
                 Sensor.TYPE_GYROSCOPE -> {
                     SensorTypeData.Gyroscope.dataString.value =
-                        buildDatastring(event.values, "deg/s", {f -> radToDeg(f)})
+                        buildDatastringForXYZ(event.values, "deg/s", { f -> radToDeg(f)})
                 }
 
                 Sensor.TYPE_MAGNETIC_FIELD -> {
                     SensorTypeData.MagneticField.dataString.value =
-                        buildDatastring(event.values, "µT")
+                        buildDatastringForXYZ(event.values, "µT")
                 }
 
                 Sensor.TYPE_GRAVITY -> {
                     SensorTypeData.Gravity.dataString.value =
-                        buildDatastring(event.values, "m/s²")
+                        buildDatastringForXYZ(event.values, "m/s²")
                 }
 
                 Sensor.TYPE_ROTATION_VECTOR -> {
                     SensorTypeData.Rotation.dataString.value =
-                        buildDatastring(event.values, "") // no unit according to docs
+                        buildDatastringForXYZ(event.values, "") // no unit according to docs
                 }
 
                 Sensor.TYPE_ORIENTATION -> {
                     SensorTypeData.Orientation.dataString.value =
-                        buildDatastring(event.values, "deg")
+                        buildDatastringForXYZ(event.values, "deg")
                 }
 
 
@@ -63,12 +63,15 @@ class SensorListener(
 
     /*** ------------------- UTIL  ----------------------- ***/
 
-    private inline fun buildDatastring(
+    private inline fun buildDatastringForXYZ(
         values: FloatArray,
         unit: String,
         conversionFnc: (Float) -> Float = { f -> f },
         decimalPlaces: Int = 2,
     ): String {
+        if(values.size < 3)
+            return "SensorEvent.values.size must be >= 3"
+
         val dp = decimalPlaces.toString()
         return "X: %.${dp}f $unit\nY: %.${dp}f $unit\nZ: %.${dp}f $unit".format(
             conversionFnc(values[0]),
