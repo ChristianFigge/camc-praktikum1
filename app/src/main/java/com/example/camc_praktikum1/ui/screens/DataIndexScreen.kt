@@ -123,7 +123,7 @@ fun NoDataYetMessage(onGotoSensorsClick: () -> Unit,) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            "\n\nNoch keine Daten vorhanden\n\n",
+            "Noch keine Daten vorhanden\n\n",
             style = MaterialTheme.typography.titleLarge,
         )
         Text(
