@@ -29,8 +29,8 @@ open class DataCollector(private val sensorType: SensorTypeData) {
 
     fun collectDatum(sensorEvent: SensorEvent) {
         val newItem = SensorEventData(
-            values = sensorEvent.values,
-            timestamp = System.currentTimeMillis()
+            values = sensorEvent.values.clone(),
+            timestamp = sensorEvent.timestamp, //System.currentTimeMillis()
         )
         _data.add(newItem)
 
