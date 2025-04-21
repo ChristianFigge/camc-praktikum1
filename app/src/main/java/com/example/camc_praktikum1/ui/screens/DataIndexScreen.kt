@@ -48,28 +48,6 @@ fun DataIndexScreen(
     }
     var collectionIndex by remember { mutableStateOf(getRecordingIndex()) }
 
-    if(collectionIndex.isEmpty()) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                "\n\nNoch keine Daten vorhanden\n\n",
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Text(
-                "Starte einen Sensor\nund speichere die Daten!\n\n",
-                textAlign = TextAlign.Center,
-            )
-            Button(
-                content= { Text("Zu den Sensoren") },
-                onClick= { onGotoSensorsClick() },
-            )
-        }
-        return
-    }
-
 
     Column(
     ) {
@@ -97,6 +75,11 @@ fun DataIndexScreen(
             }
             Spacer(Modifier.height(20.dp))
             HorizontalDivider(thickness = 2.dp)
+        }
+
+        if(collectionIndex.isEmpty()) {
+            NoDataYetMessage { onGotoSensorsClick() }
+            return
         }
 
         Spacer(Modifier.height(20.dp))
@@ -127,5 +110,27 @@ fun DataIndexScreen(
                 Spacer(Modifier.height(10.dp))
             }
         }
+    }
+}
+
+@Composable
+fun NoDataYetMessage(onGotoSensorsClick: () -> Unit,) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            "\n\nNoch keine Daten vorhanden\n\n",
+            style = MaterialTheme.typography.titleLarge,
+        )
+        Text(
+            "Starte einen Sensor\nund speichere die Daten!\n\n",
+            textAlign = TextAlign.Center,
+        )
+        Button(
+            content= { Text("Zu den Sensoren") },
+            onClick= { onGotoSensorsClick() },
+        )
     }
 }
