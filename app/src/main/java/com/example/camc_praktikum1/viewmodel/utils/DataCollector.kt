@@ -30,7 +30,7 @@ open class DataCollector(private val sensorType: SensorTypeData) {
     fun collectDatum(sensorEvent: SensorEvent) {
         val newItem = SensorEventData(
             values = sensorEvent.values.clone(),
-            timestamp = sensorEvent.timestamp, //System.currentTimeMillis()
+            timestampNs = sensorEvent.timestamp, //System.currentTimeMillis()
         )
         _data.add(newItem)
 
@@ -67,7 +67,7 @@ open class DataCollector(private val sensorType: SensorTypeData) {
             fileName = fileName,
             createdAt = timeMs, //sdf.format(Date(timeMs)),
             size = data.size,
-            durationMs = data.last().timestamp - data.first().timestamp,
+            durationMs = (data.last().timestampNs - data.first().timestampNs) / 1000000,
             sessionId = sessionId,
         )
         val colIdx = readRecordingIndex(ctx)
