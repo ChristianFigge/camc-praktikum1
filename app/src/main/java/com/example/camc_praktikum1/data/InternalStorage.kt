@@ -76,15 +76,18 @@ class InternalStorage {
             updateRecordingIndex(dataIndex, ctx)
         }
 
-        @Throws(FileNotFoundException::class, SerializationException::class, IllegalArgumentException::class)
+        /**
+         * Tries to obtain record index from the app's storage (currently a JSON file).
+         * Returns an empty index if the file doesn't exist yet.
+         */
+        @Throws(SerializationException::class, IllegalArgumentException::class)
         fun readRecordingIndex(ctx: Context): MutableList<RecordingMetaData> {
             try {
                 val fileContent: String = readTextFile(INDEX_FILENAME, ctx)
                 return Json.decodeFromString(fileContent)
             } catch (fileEx: FileNotFoundException) {
-                //pass
+                return mutableListOf<RecordingMetaData>()
             }
-            return mutableListOf<RecordingMetaData>()
         }
 
         @Throws(SerializationException::class, FileNotFoundException::class, IOException::class)

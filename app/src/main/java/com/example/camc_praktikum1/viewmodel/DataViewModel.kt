@@ -28,8 +28,20 @@ class DataViewModel private constructor(
         get() = _selectedMetaData
 
 
-    fun readRecordingIndex(ctx: Context): MutableList<RecordingMetaData> {
-        return InternalStorage.readRecordingIndex(ctx)
+    fun readRecordingIndex(
+        ctx: Context,
+        orderByTimeDescending: Boolean = false,
+    ): List<RecordingMetaData>? {
+        try {
+            val index = InternalStorage.readRecordingIndex(ctx).toList()
+            if(orderByTimeDescending)
+                return index.asReversed()
+            return index
+        } catch(ex: Exception) {
+            ex.printStackTrace()
+            Toast.makeText(ctx, "Failed to read index data", Toast.LENGTH_LONG).show()
+            return null
+        }
     }
 
     fun selectData(metaData: RecordingMetaData) {

@@ -43,8 +43,8 @@ fun DataIndexScreen(
     val sdf = SimpleDateFormat("dd.MM.yy HH:mm:ss", Locale.getDefault())
 
     // Helper fncs:
-    fun getRecordingIndex(): List<RecordingMetaData> {
-        return viewModel.readRecordingIndex(ctx).asReversed().toList()
+    fun getRecordingIndex(): List<RecordingMetaData>? {
+        return viewModel.readRecordingIndex(ctx, orderByTimeDescending = true)
     }
     var collectionIndex by remember { mutableStateOf(getRecordingIndex()) }
 
@@ -77,7 +77,7 @@ fun DataIndexScreen(
             HorizontalDivider(thickness = 2.dp)
         }
 
-        if(collectionIndex.isEmpty()) {
+        if(collectionIndex.isNullOrEmpty()) {
             NoDataYetMessage { onGotoSensorsClick() }
             return
         }
@@ -87,27 +87,29 @@ fun DataIndexScreen(
         LazyColumn(
             modifier=Modifier.padding(start=30.dp)
         ) {
-            items(collectionIndex) {
-                Row() {
-                    RadioButton(
-                        selected = selectedMetaData == it,
-                        onClick = {
-                            viewModel.selectData(it)
+            collectionIndex?.let { index ->
+                items(index) {
+                    Row() {
+                        RadioButton(
+                            selected = selectedMetaData == it,
+                            onClick = {
+                                viewModel.selectData(it)
+                            }
+                        )
+                        Column() {
+                            Text(
+                                it.sensorName + ", " + sdf.format(Date(it.createdAt)),
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                "(${it.size} Events in ${it.durationMs} ms)\n" +
+                                        "SessionId: " + it.sessionId,
+                                style = MaterialTheme.typography.labelLarge
+                            )
                         }
-                    )
-                    Column() {
-                        Text(
-                            it.sensorName + ", " + sdf.format(Date(it.createdAt)),
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            "(${it.size} Events in ${it.durationMs} ms)\n" +
-                            "SessionId: " + it.sessionId,
-                            style = MaterialTheme.typography.labelLarge
-                        )
                     }
+                    Spacer(Modifier.height(10.dp))
                 }
-                Spacer(Modifier.height(10.dp))
             }
         }
     }
