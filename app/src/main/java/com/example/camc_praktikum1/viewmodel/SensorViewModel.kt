@@ -13,7 +13,7 @@ import com.example.camc_praktikum1.viewmodel.utils.getRecordingSessionId
 
 
 class SensorViewModel private constructor(
-    ctx: Context,
+    private val sensorManager: SensorManager,
 ):
     ViewModel()
 {
@@ -23,11 +23,11 @@ class SensorViewModel private constructor(
 
         fun getInstance(ctx: Context) =
             instance ?: synchronized(this) {
-                SensorViewModel(ctx).also { instance = it }
+                val sensorMan = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+                SensorViewModel(sensorMan).also { instance = it }
             }
     }
 
-    private var sensorManager = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
     private val runningFlags = mutableIntStateOf(0)
     val noSensorIsRunning: Boolean
         get() = runningFlags.intValue == 0
@@ -92,21 +92,31 @@ class SensorViewModel private constructor(
         SensorTypeData.entries.forEach { stopSensor(it) }
     }
 
-    fun clearData(sensorType: SensorTypeData, ctx: Context, toastMsg: String? = "Daten gelöscht") {
+    fun clearRecordingData(sensorType: SensorTypeData, ctx: Context, toastMsg: String? = "Daten gelöscht") {
         sensorType.listener!!.value.clearData()
 
         toastMsg?.let {
             Toast.makeText(ctx, "${sensorType.label} $toastMsg", Toast.LENGTH_SHORT).show()
         }
     }
+
+    fun clearAllRecordingData(ctx: Context, toastMsg: String? = "Alle Daten gelöscht") {
+        SensorTypeData.entries.forEach {
+            it.listener!!.value.clearData()
+        }
+
+        toastMsg?.let {
+            Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
+        }
+    }
     /***  ------------------------ ENDE Listener Steuerung ------------------------------ ***/
 
 
     /*** ----------------------------- START I/O ---------------------------- ***/
-    fun saveSensorDataInStorage(
+    fun saveRecordingInStorage(
         sensorType: SensorTypeData,
         ctx: Context,
-        successMsg : String? = "Daten gespeichert",
+        successToastMsg : String? = "Daten gespeichert",
         cleanUp: Boolean = true
     ) {
         try {
@@ -117,12 +127,12 @@ class SensorViewModel private constructor(
             return
         }
 
-        successMsg?.let {
+        successToastMsg?.let {
             Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun saveAllSensorDataInStorage(
+    fun saveAllRecordingsInStorage(
         ctx : Context,
         successToastMsg : String? = "Alle Daten gespeichert",
         cleanUp: Boolean = true
@@ -140,16 +150,6 @@ class SensorViewModel private constructor(
         }
 
         successToastMsg?.let {
-            Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    fun clearAllSensorData(ctx: Context, toastMsg: String? = "Alle Daten gelöscht") {
-        SensorTypeData.entries.forEach {
-            it.listener!!.value.clearData()
-        }
-
-        toastMsg?.let {
             Toast.makeText(ctx, it, Toast.LENGTH_SHORT).show()
         }
     }

@@ -48,13 +48,13 @@ fun AllSensorsScreen(
             Row() {
                 Button(
                     content = { Text("Alle Daten\nlöschen", textAlign= TextAlign.Center) },
-                    onClick = { viewModel.clearAllSensorData(ctx) },
+                    onClick = { viewModel.clearAllRecordingData(ctx) },
                     enabled = viewModel.noSensorIsRunning && anySensorHasData(),
                 )
                 Spacer(Modifier.width(10.dp))
                 Button(
                     content = { Text("Alle Daten\nspeichern", textAlign= TextAlign.Center) },
-                    onClick = { viewModel.saveAllSensorDataInStorage(ctx) },
+                    onClick = { viewModel.saveAllRecordingsInStorage(ctx) },
                     enabled = viewModel.noSensorIsRunning && anySensorHasData(),
                 )
                 Spacer(Modifier.width(20.dp))

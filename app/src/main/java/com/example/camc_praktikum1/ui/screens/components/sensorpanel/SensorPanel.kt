@@ -72,7 +72,7 @@ fun SensorPanel(
             // DELETE
             Button(
                 onClick = {
-                    viewModel.clearData(sensorType, ctx)
+                    viewModel.clearRecordingData(sensorType, ctx)
                 },
                 content = { Text("Löschen") },
                 enabled = !sensorIsRunning && sensorHasData,
@@ -81,7 +81,7 @@ fun SensorPanel(
             // SAVE
             Button(
                 onClick = {
-                    viewModel.saveSensorDataInStorage(sensorType, ctx)
+                    viewModel.saveRecordingInStorage(sensorType, ctx)
                 },
                 content = { Text("Speichern") },
                 enabled = !sensorIsRunning && sensorHasData,
