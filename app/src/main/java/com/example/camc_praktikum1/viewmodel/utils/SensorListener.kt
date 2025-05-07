@@ -72,11 +72,15 @@ class SensorListener(
         if(values.size < 3)
             return "SensorEvent.values.size must be >= 3"
 
+        for(i in 0..2) {
+            values[i] = conversionFnc(values[i])
+        }
+
         val dp = decimalPlaces.toString()
         return "X: %.${dp}f $unit\nY: %.${dp}f $unit\nZ: %.${dp}f $unit".format(
-            conversionFnc(values[0]),
-            conversionFnc(values[1]),
-            conversionFnc(values[2]),
+            values[0], // conversionFnc(values[0]),
+            values[1], //conversionFnc(values[1]),
+            values[2], //conversionFnc(values[2]),
             //getMagnitude(event.values)
         )
     }
