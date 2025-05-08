@@ -63,7 +63,8 @@ fun HomeScreen(
             //style= MaterialTheme.typography.titleMedium
         )
         Text(
-            "Kotlin und Jetpack Compose",
+            "Android Studio\n" +
+            "Kotlin mit Jetpack Compose",
             textAlign = TextAlign.Center
         )
 

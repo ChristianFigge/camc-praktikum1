@@ -57,7 +57,7 @@ fun DataIndexScreen(
             Spacer(Modifier.height(20.dp))
             Row() {
                 Button(
-                    content = { Text("Delete") },
+                    content = { Text("Löschen") },
                     enabled = selectedMetaData != null,
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = {
@@ -67,7 +67,7 @@ fun DataIndexScreen(
                     }
                 )
                 Button(
-                    content = { Text("Show plot") },
+                    content = { Text("Graph anzeigen") },
                     enabled = selectedMetaData != null,
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = { onShowPlotClick() }

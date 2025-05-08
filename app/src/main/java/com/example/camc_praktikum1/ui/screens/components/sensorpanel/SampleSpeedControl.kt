@@ -37,7 +37,7 @@ fun SampleSpeedControl(
     }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("Sample Speed:")
+        Text("Sample Delay:")
         Spacer(Modifier.width(10.dp))
         ExposedDropdownMenuBox(
             expanded = menuIsExpanded,

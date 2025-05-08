@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -145,9 +146,11 @@ fun DataPlotPanel(
 
         Spacer(Modifier.height(20.dp))
         Text(metaData!!.sensorName, style= MaterialTheme.typography.titleLarge)
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(20.dp))
+
         Text("\uD83D\uDD35 X|Y|Z  \uD83D\uDD34 Magnitude  \uD83D\uDFE2 Durchschnitt")
         Spacer(Modifier.height(10.dp))
+
         LineChart(
             modifier = Modifier
                 .fillMaxWidth()
@@ -155,8 +158,9 @@ fun DataPlotPanel(
             lineChartData = lineChartData
         )
 
-        Spacer(Modifier.height(20.dp))
-        Text("JSON Data: \n\n$data")
+        HorizontalDivider()
+        Spacer(Modifier.height(30.dp))
+        Text("JSON Data:\n\n$data")
 
     }
 
