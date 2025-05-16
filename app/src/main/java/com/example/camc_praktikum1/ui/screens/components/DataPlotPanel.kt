@@ -54,9 +54,9 @@ fun DataPlotPanel(
     // max/min für valuerange der y-Achse
     var maxVal = Float.MIN_VALUE
     var minVal = Float.MAX_VALUE
-    val tFirst = data.first().timestampNs
+    val tFirst = data.first().timestampMillis
     data.forEachIndexed { i, data ->
-        val t = ((data.timestampNs - tFirst) / 1000000 /* as ms */).toFloat()
+        val t = ((data.timestampMillis - tFirst) / 1000000 /* as ms */).toFloat()
         magPoints[i] = Point(t, getMagnitude(data.values))
         avrgPoints[i] = Point(t, data.values.average().toFloat())
         xPoints[i] = Point(t, data.values[0])
@@ -76,7 +76,7 @@ fun DataPlotPanel(
     val xAxisData = AxisData.Builder()
         .axisStepSize(1.dp) // 1.dp per ms
         .backgroundColor(Color.White)
-        .steps(((data.last().timestampNs - data.first().timestampNs) / 100000000).toInt() ) // 100ms steps
+        .steps(((data.last().timestampMillis - data.first().timestampMillis) / 100000000).toInt() ) // 100ms steps
         .labelData { i -> (i).toString() + " ms" }
         .labelAndAxisLinePadding(15.dp)
         .build()

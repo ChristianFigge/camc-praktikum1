@@ -22,6 +22,8 @@ open class DataCollector(private val sensorType: SensorTypeData) {
         var transportMode : TransportMode
             get() = _transportMode.value
             set(mode) { _transportMode.value = mode }
+
+        val syncDatum = FloatArray(3) { _ -> -1.0f }
     }
     private val sensorName = sensorType.name
 
@@ -33,16 +35,35 @@ open class DataCollector(private val sensorType: SensorTypeData) {
     val hasData : Boolean
         get() = _hasData.value
 
+    private inline fun updateHasData() {
+        // assuming reading is faster than writing
+        if(!hasData)
+            _hasData.value = true
+    }
+
     fun collectDatum(sensorEvent: SensorEvent) {
         val newItem = SensorEventData(
             values = sensorEvent.values.clone(),
-            timestampNs = sensorEvent.timestamp, //System.currentTimeMillis()
-            transportMode = _transportMode.value.name,
+            timestampMillis = System.currentTimeMillis(), //sensorEvent.timestamp, //System.currentTimeMillis()
+            mode = _transportMode.value.name,
         )
         _data.add(newItem)
+        updateHasData()
+    }
 
-        if(!hasData)
-            _hasData.value = true
+    /*
+     * Adds a SYNC item to the data list. Does not work if listener is currently running.
+     */
+    fun saveSyncDatum(timestampMillis: Long) {
+        if(!sensorType.isRunning.value) {
+            val newItem = SensorEventData(
+                values = syncDatum,
+                timestampMillis = timestampMillis,
+                mode = "SYNC",
+            )
+            _data.add(newItem)
+        }
+        //updateHasData()
     }
 
     fun clearData() {
@@ -74,7 +95,7 @@ open class DataCollector(private val sensorType: SensorTypeData) {
             fileName = fileName,
             createdAt = timeMs, //sdf.format(Date(timeMs)),
             size = data.size,
-            durationMs = (data.last().timestampNs - data.first().timestampNs) / 1000000,
+            durationMs = data.last().timestampMillis - data.first().timestampMillis,
             sessionId = sessionId,
         )
         val colIdx = readRecordingIndex(ctx)

@@ -47,16 +47,22 @@ class CollectDataViewModel private constructor (
     }
 
     fun startSelectedSensors() {
+        val nowMillis = System.currentTimeMillis()
         SensorTypeData.entries.forEach {
-            if(it.isSelected.value)
+            if(it.isSelected.value) {
+                it.listener!!.value.saveSyncDatum(nowMillis)
                 startSensor(it)
+            }
         }
     }
 
     fun stopAllRunningSensors() {
+        val nowMillis = System.currentTimeMillis()
         SensorTypeData.entries.forEach {
-            if(it.isRunning.value)
+            if(it.isRunning.value) {
                 stopSensor(it)
+                it.listener!!.value.saveSyncDatum(nowMillis)
+            }
         }
     }
 
