@@ -84,10 +84,10 @@ open class DataCollector(private val sensorType: SensorTypeData) {
 
         val timeMs: Long = pTimeMs ?: System.currentTimeMillis()
         val sessionId: String = pSessionId ?: getRecordingSessionId()
-        val fileName: String = sensorName + "_${sessionId}.json"
+        val fileName: String = sensorName + "_${sessionId}.json.zip"
         val data = _data.toList()
 
-        saveDataAsJsonFile(data, fileName, ctx)
+        saveDataAsJsonFile(data, fileName, ctx, true)
 
         // update data index
         val metaData = RecordingMetaData(

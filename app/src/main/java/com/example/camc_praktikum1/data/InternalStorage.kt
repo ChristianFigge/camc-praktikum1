@@ -3,6 +3,8 @@ package com.example.camc_praktikum1.data
 import android.content.Context
 import com.example.camc_praktikum1.data.models.RecordingMetaData
 import com.example.camc_praktikum1.data.models.SensorEventData
+import com.example.camc_praktikum1.data.util.compress
+import com.example.camc_praktikum1.data.util.decompress
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.FileNotFoundException
@@ -15,15 +17,18 @@ class InternalStorage {
         private val INDEX_FILENAME = "data_index.json"
 
         @Throws(FileNotFoundException::class)
+        fun readFile(fileName: String, ctx: Context): ByteArray {
+            return ctx.openFileInput(fileName).use { it.readBytes() }
+        }
+
+        @Throws(FileNotFoundException::class)
         fun readTextFile(fileName: String, ctx: Context): String {
-            return ctx.openFileInput(fileName).bufferedReader().readText()
+            return ctx.openFileInput(fileName).bufferedReader().use { it.readText() }
         }
 
         @Throws(FileNotFoundException::class, IOException::class)
         fun writeDataToFile(data: ByteArray, fileName: String, ctx: Context) {
-            ctx.openFileOutput(fileName, Context.MODE_PRIVATE).use {
-                it.write(data)
-            }
+            ctx.openFileOutput(fileName, Context.MODE_PRIVATE).use { it.write(data) }
         }
 
         @Throws(FileNotFoundException::class, IOException::class)
@@ -32,9 +37,12 @@ class InternalStorage {
         }
 
         @Throws(SerializationException::class, FileNotFoundException::class, IOException::class)
-        inline fun <reified T> saveDataAsJsonFile(data: T, fileName: String, ctx: Context) {
+        inline fun <reified T> saveDataAsJsonFile(data: T, fileName: String, ctx: Context, compress: Boolean = false) {
             val jsonString = Json.encodeToString(data)
-            writeTextFile(jsonString, fileName, ctx)
+            if(compress)
+                writeDataToFile(jsonString.compress(), fileName, ctx)
+            else
+                writeTextFile(jsonString, fileName, ctx)
         }
 
         @Throws(FileNotFoundException::class, NullPointerException::class, SecurityException::class)
@@ -47,7 +55,7 @@ class InternalStorage {
 
         @Throws(FileNotFoundException::class, SerializationException::class, IllegalArgumentException::class)
         fun loadRecordingFromFile(fileName: String, ctx: Context): List<SensorEventData> {
-            val jsonString = readTextFile(fileName, ctx)
+            val jsonString = readFile(fileName, ctx).decompress()
             return Json.decodeFromString(jsonString)
         }
 
