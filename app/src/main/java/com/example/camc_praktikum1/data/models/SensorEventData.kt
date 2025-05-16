@@ -5,5 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SensorEventData(
     val values: FloatArray,
-    val timestampNs: Long
+    val timestampNs: Long,
+    val transportMode: Int = -1
 )

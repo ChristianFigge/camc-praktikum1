@@ -44,12 +44,13 @@ import com.example.camc_praktikum1.ui.screens.AppScreenData
 import com.example.camc_praktikum1.ui.screens.DataIndexScreen
 import com.example.camc_praktikum1.ui.screens.HomeScreen
 import com.example.camc_praktikum1.ui.screens.AllSensorsScreen
+import com.example.camc_praktikum1.ui.screens.CollectDataScreen
 import com.example.camc_praktikum1.ui.screens.DataPlotScreen
 import com.example.camc_praktikum1.viewmodel.SensorViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-private val HOME_ROUTE = AppScreenData.Home.name
+private val HOME_ROUTE = AppScreenData.CollectData.name
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -161,6 +162,9 @@ fun CAMCApp(
                 }
                 composable(route = AppScreenData.DataPlot.name) {
                     DataPlotScreen()
+                }
+                composable(route = AppScreenData.CollectData.name) {
+                    CollectDataScreen()
                 }
             }
 

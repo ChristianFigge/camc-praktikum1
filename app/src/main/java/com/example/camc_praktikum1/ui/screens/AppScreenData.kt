@@ -2,6 +2,7 @@ package com.example.camc_praktikum1.ui.screens
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
@@ -31,5 +32,9 @@ enum class AppScreenData(
         title = "Daten Plot",
         icon = Icons.Default.Info,
         showInDrawer = false,
+    ),
+    CollectData(
+        title = "Daten sammeln",
+        icon = Icons.Default.Face,
     )
 }
