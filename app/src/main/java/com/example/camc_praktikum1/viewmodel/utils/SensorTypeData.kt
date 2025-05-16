@@ -41,11 +41,13 @@ enum class SensorTypeData(
     val dataString: MutableState<String> = mutableStateOf(DATASTRING_INIT),
     var listener: MutableState<SensorListener>? = null,
     var isRunning: MutableState<Boolean> = mutableStateOf(false),
+    var isSelected: MutableState<Boolean> = mutableStateOf(false),
     var delayType: MutableState<SensorDelay> = mutableStateOf(SensorDelay.Normal),
 ) {
     Accelerometer(
         type_id = Sensor.TYPE_ACCELEROMETER,
         label = "Accelerometer",
+        isSelected = mutableStateOf(true),
     ),
     Gravity(
         type_id = Sensor.TYPE_GRAVITY,
@@ -57,7 +59,8 @@ enum class SensorTypeData(
     ),
     Gyroscope(
         type_id = Sensor.TYPE_GYROSCOPE,
-        label = "Gyroskop"
+        label = "Gyroskop",
+        isSelected = mutableStateOf(true),
     ),
     MagneticField(
         type_id = Sensor.TYPE_MAGNETIC_FIELD,

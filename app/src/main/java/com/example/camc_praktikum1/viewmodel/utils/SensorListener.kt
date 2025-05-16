@@ -8,6 +8,7 @@ import kotlin.math.sqrt
 
 class SensorListener(
     sensorType: SensorTypeData,
+    private val writeDataStrings: Boolean = true,
 ) :
     DataCollector(sensorType),
     SensorEventListener
@@ -18,47 +19,50 @@ class SensorListener(
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
-            when (event.sensor?.type) {
+            if (writeDataStrings) {
+                when (event.sensor?.type) {
+                    Sensor.TYPE_ACCELEROMETER -> {
+                        SensorTypeData.Accelerometer.dataString.value =
+                            buildDatastringForXYZ(event.values, "m/s²")
+                    }
 
-                Sensor.TYPE_ACCELEROMETER -> {
-                    SensorTypeData.Accelerometer.dataString.value =
-                        buildDatastringForXYZ(event.values, "m/s²")
+                    Sensor.TYPE_LINEAR_ACCELERATION -> {
+                        SensorTypeData.LinearAccel.dataString.value =
+                            buildDatastringForXYZ(event.values, "m/s²")
+                    }
+
+                    Sensor.TYPE_GYROSCOPE -> {
+                        SensorTypeData.Gyroscope.dataString.value =
+                            buildDatastringForXYZ(event.values, "deg/s", { f -> radToDeg(f) })
+                    }
+
+                    Sensor.TYPE_MAGNETIC_FIELD -> {
+                        SensorTypeData.MagneticField.dataString.value =
+                            buildDatastringForXYZ(event.values, "µT")
+                    }
+
+                    Sensor.TYPE_GRAVITY -> {
+                        SensorTypeData.Gravity.dataString.value =
+                            buildDatastringForXYZ(event.values, "m/s²")
+                    }
+
+                    Sensor.TYPE_ROTATION_VECTOR -> {
+                        SensorTypeData.Rotation.dataString.value =
+                            buildDatastringForXYZ(event.values, "") // no unit according to docs
+                    }
+
+                    Sensor.TYPE_ORIENTATION -> {
+                        SensorTypeData.Orientation.dataString.value =
+                            buildDatastringForXYZ(event.values, "deg")
+                    }
                 }
-
-                Sensor.TYPE_LINEAR_ACCELERATION -> {
-                    SensorTypeData.LinearAccel.dataString.value =
-                        buildDatastringForXYZ(event.values, "m/s²")
-                }
-
-                Sensor.TYPE_GYROSCOPE -> {
-                    SensorTypeData.Gyroscope.dataString.value =
-                        buildDatastringForXYZ(event.values, "deg/s", { f -> radToDeg(f)})
-                }
-
-                Sensor.TYPE_MAGNETIC_FIELD -> {
-                    SensorTypeData.MagneticField.dataString.value =
-                        buildDatastringForXYZ(event.values, "µT")
-                }
-
-                Sensor.TYPE_GRAVITY -> {
-                    SensorTypeData.Gravity.dataString.value =
-                        buildDatastringForXYZ(event.values, "m/s²")
-                }
-
-                Sensor.TYPE_ROTATION_VECTOR -> {
-                    SensorTypeData.Rotation.dataString.value =
-                        buildDatastringForXYZ(event.values, "") // no unit according to docs
-                }
-
-                Sensor.TYPE_ORIENTATION -> {
-                    SensorTypeData.Orientation.dataString.value =
-                        buildDatastringForXYZ(event.values, "deg")
-                }
-
-
             }
             super.collectDatum(event)
         }
+    }
+
+    fun setWriteDataStrings(bool: Boolean) {
+
     }
 
     /*** ------------------- UTIL  ----------------------- ***/

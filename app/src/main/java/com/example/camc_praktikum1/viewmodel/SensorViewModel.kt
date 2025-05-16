@@ -12,8 +12,9 @@ import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
 import com.example.camc_praktikum1.viewmodel.utils.getRecordingSessionId
 
 
-class SensorViewModel private constructor(
+open class SensorViewModel internal constructor(
     private val sensorManager: SensorManager,
+    writeDataStrings: Boolean = true,
 ):
     ViewModel()
 {
@@ -28,17 +29,17 @@ class SensorViewModel private constructor(
             }
     }
 
-    private val runningFlags = mutableIntStateOf(0)
+    private val sensorSelectionFlags = mutableIntStateOf(0)
     val noSensorIsRunning: Boolean
-        get() = runningFlags.intValue == 0
+        get() = sensorSelectionFlags.intValue == 0
 
     init {
         SensorTypeData.entries.forEach { type ->
-            type.listener = mutableStateOf(SensorListener(type))
+            type.listener = mutableStateOf(SensorListener(type, writeDataStrings))
 
             Log.d(
                 "SensorControlDbg",
-                "Initialized ${type.name.uppercase()} Listener")
+                "Initialized ${type.name.uppercase()} Listener (writeDataStrings ${writeDataStrings})")
         }
     }
 
@@ -58,7 +59,7 @@ class SensorViewModel private constructor(
         sensorType.isRunning.value = true
 
         // set running flag
-        runningFlags.intValue = runningFlags.intValue or (1 shl sensorType.ordinal)
+        sensorSelectionFlags.intValue = sensorSelectionFlags.intValue or (1 shl sensorType.ordinal)
 
         Log.d(
             "SensorControlDbg",
@@ -76,7 +77,7 @@ class SensorViewModel private constructor(
         sensorType.dataString.value = "\n(Angehalten)\n"
 
         // unset running flag
-        runningFlags.intValue = runningFlags.intValue and (1 shl sensorType.ordinal).inv()
+        sensorSelectionFlags.intValue = sensorSelectionFlags.intValue and (1 shl sensorType.ordinal).inv()
 
         Log.d(
             "SensorControlDbg",
