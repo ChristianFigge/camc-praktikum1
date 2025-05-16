@@ -17,6 +17,12 @@ import java.io.IOException
  * Saves SensorEventData in a list.
  */
 open class DataCollector(private val sensorType: SensorTypeData) {
+    companion object {
+        private val _transportMode = mutableStateOf(TransportMode.Stillstand)
+        var transportMode : TransportMode
+            get() = _transportMode.value
+            set(mode) { _transportMode.value = mode }
+    }
     private val sensorName = sensorType.name
 
     private var _data = mutableListOf<SensorEventData>()
@@ -31,6 +37,7 @@ open class DataCollector(private val sensorType: SensorTypeData) {
         val newItem = SensorEventData(
             values = sensorEvent.values.clone(),
             timestampNs = sensorEvent.timestamp, //System.currentTimeMillis()
+            transportMode = _transportMode.value.name,
         )
         _data.add(newItem)
 

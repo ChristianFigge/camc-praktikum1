@@ -61,9 +61,6 @@ class SensorListener(
         }
     }
 
-    fun setWriteDataStrings(bool: Boolean) {
-
-    }
 
     /*** ------------------- UTIL  ----------------------- ***/
 
