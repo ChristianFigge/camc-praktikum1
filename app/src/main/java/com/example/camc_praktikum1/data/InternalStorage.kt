@@ -1,6 +1,8 @@
 package com.example.camc_praktikum1.data
 
 import android.content.Context
+import android.icu.text.SimpleDateFormat
+import com.example.camc_praktikum1.data.models.ExportSessionData
 import com.example.camc_praktikum1.data.models.RecordingMetaData
 import com.example.camc_praktikum1.data.models.SensorEventData
 import com.example.camc_praktikum1.data.util.compress
@@ -10,11 +12,14 @@ import kotlinx.serialization.json.Json
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.File
+import java.util.Date
+import java.util.Locale
 
 class InternalStorage {
     companion object {
 
         private val INDEX_FILENAME = "data_index.json"
+        private var sdf = SimpleDateFormat("dd-MM_HH-mm", Locale.getDefault())
 
         @Throws(FileNotFoundException::class)
         fun readFile(fileName: String, ctx: Context): ByteArray {
@@ -103,8 +108,30 @@ class InternalStorage {
             saveDataAsJsonFile(newCollectionIndex, INDEX_FILENAME, ctx)
         }
 
+        // TODO add throws
         fun getSessionExportData(metaData: RecordingMetaData, ctx: Context): Pair<ByteArray, String> {
-            return Pair("asdasd888".toByteArray(), "testfile.json.zlib")
+            // get all recordings with the same sessionId from index
+            val sessionSensorNames: MutableList<String> = mutableListOf()
+            val sessionRecordings: MutableList<List<SensorEventData>> = mutableListOf()
+            readRecordingIndex(ctx).forEach { recMetaData ->
+                if(recMetaData.sessionId == metaData.sessionId) {
+                    sessionSensorNames.add(recMetaData.sensorName)
+                    sessionRecordings.add(loadRecordingFromFile(recMetaData.fileName, ctx))
+                }
+            }
+            // create data object, encode it to json and zlib-compress
+            val exportBytes = Json.encodeToString(
+                ExportSessionData(
+                    sessionId = metaData.sessionId,
+                    createdAt = metaData.createdAt,
+                    durationMs = metaData.durationMs,
+                    sensorTypes = sessionSensorNames,
+                    sensorRecordings = sessionRecordings,
+                )
+            ).compress()
+
+            val exportFileName = "sensorDaten_${sdf.format(Date(metaData.createdAt))}.json.zlib"
+            return Pair(exportBytes, exportFileName)
         }
     }
 }

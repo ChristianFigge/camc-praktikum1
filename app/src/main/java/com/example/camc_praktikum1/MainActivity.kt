@@ -59,10 +59,9 @@ class MainActivity : ComponentActivity() {
         // Note: registerForActivityResult() has to be used BEFORE Activity() creation is finished!
         // i.e. we have to define the Launcher here and use a local reference for dynamic file contents
         // ref https://developer.android.com/training/basics/intents/result#kotlin
-        // Thanks a lot to mister Alaa https://stackoverflow.com/questions/64476827/how-to-resolve-the-error-lifecycleowners-must-call-register-before-they-are-sta
         var zipFileContent = byteArrayOf() // overwrite this and call Launcher.launch("filename")
         val zipFileCreationLauncher = registerForActivityResult(
-            ActivityResultContracts.CreateDocument("application/zip")) { uri ->
+            ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
             uri?.let {
                 try {
                     val fileOutputStream = contentResolver.openOutputStream(it)

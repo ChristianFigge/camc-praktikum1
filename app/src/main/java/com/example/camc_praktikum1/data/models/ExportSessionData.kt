@@ -8,5 +8,5 @@ data class ExportSessionData(
     val createdAt: Long,
     val durationMs: Long,
     val sensorTypes: List<String>,
-    val sensorRecords: List<List<SensorEventData>>,
+    val sensorRecordings: List<List<SensorEventData>>,
 )

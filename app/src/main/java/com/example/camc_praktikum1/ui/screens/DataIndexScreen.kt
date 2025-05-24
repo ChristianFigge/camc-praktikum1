@@ -75,9 +75,10 @@ fun DataIndexScreen(
                     onClick = { onShowPlotClick() }
                 )
             }
+            //Spacer(Modifier.height(10.dp))
             Row() {
                 Button(
-                    content = { Text("Export Test") },
+                    content = { Text("Session exportieren") },
                     enabled = selectedMetaData != null,
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = {
