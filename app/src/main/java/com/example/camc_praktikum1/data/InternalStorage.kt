@@ -102,5 +102,9 @@ class InternalStorage {
         fun updateRecordingIndex(newCollectionIndex: List<RecordingMetaData>, ctx: Context) {
             saveDataAsJsonFile(newCollectionIndex, INDEX_FILENAME, ctx)
         }
+
+        fun getSessionExportData(metaData: RecordingMetaData, ctx: Context): Pair<ByteArray, String> {
+            return Pair("asdasd888".toByteArray(), "testfile.json.zlib")
+        }
     }
 }

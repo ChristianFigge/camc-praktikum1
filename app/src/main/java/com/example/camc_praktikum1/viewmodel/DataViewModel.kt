@@ -84,4 +84,15 @@ class DataViewModel private constructor(
         }
         return null
     }
+
+    fun getSessionExportData(ctx: Context): Pair<ByteArray, String>? {
+        _selectedMetaData.value?.let {
+            try {
+                return InternalStorage.getSessionExportData(it, ctx)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+        return null
+    }
 }

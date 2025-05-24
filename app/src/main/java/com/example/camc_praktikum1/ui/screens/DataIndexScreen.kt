@@ -78,10 +78,15 @@ fun DataIndexScreen(
             Row() {
                 Button(
                     content = { Text("Export Test") },
+                    enabled = selectedMetaData != null,
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = {
-                        // TODO create actual export data
-                        onExportClick("asdasd".toByteArray(), "testfile.zip")
+                        val exportData: Pair<ByteArray, String>? = viewModel.getSessionExportData(ctx)
+                        exportData?.let {
+                            val bytes = it.first
+                            val fileName = it.second
+                            onExportClick(bytes, fileName)
+                        }
                     }
                 )
 
