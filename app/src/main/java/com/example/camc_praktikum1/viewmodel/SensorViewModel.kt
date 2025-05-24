@@ -14,7 +14,6 @@ import com.example.camc_praktikum1.viewmodel.utils.getRecordingSessionId
 
 open class SensorViewModel internal constructor(
     private val sensorManager: SensorManager,
-    writeDataStrings: Boolean = true,
 ):
     ViewModel()
 {
@@ -35,11 +34,11 @@ open class SensorViewModel internal constructor(
 
     init {
         SensorTypeData.entries.forEach { type ->
-            type.listener = mutableStateOf(SensorListener(type, writeDataStrings))
+            type.listener = mutableStateOf(SensorListener(type))
 
             Log.d(
                 "SensorControlDbg",
-                "Initialized ${type.name.uppercase()} Listener (writeDataStrings ${writeDataStrings})")
+                "Initialized ${type.name.uppercase()} Listener")
         }
     }
 

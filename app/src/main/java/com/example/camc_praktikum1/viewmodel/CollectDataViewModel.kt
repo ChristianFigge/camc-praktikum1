@@ -10,9 +10,8 @@ import com.example.camc_praktikum1.viewmodel.utils.DataCollector
 
 class CollectDataViewModel private constructor (
     sensorManager: SensorManager,
-    writeDataStrings: Boolean = false,
 ):
-    SensorViewModel(sensorManager, writeDataStrings)
+    SensorViewModel(sensorManager)
 {
     companion object { // static in kotlin
         @Volatile
@@ -25,9 +24,8 @@ class CollectDataViewModel private constructor (
             }
     }
 
-    //private val _transportMode = mutableStateOf(DataCollector.transportMode)//mutableStateOf<TransportMode>(TransportMode.Stillstand)
     var transportMode: TransportMode
-        get() = DataCollector.transportMode //_transportMode.value
+        get() = DataCollector.transportMode
         set(mode) {
             DataCollector.transportMode = mode
             Log.d("CollectDataDbg", "Selected transport mode ${mode.name.uppercase()}")

@@ -38,12 +38,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.camc_praktikum1.ui.screens.AllSensorsScreen
 import com.example.camc_praktikum1.ui.screens.AppScreenData
 import com.example.camc_praktikum1.ui.screens.CollectDataScreen
 import com.example.camc_praktikum1.ui.screens.DataIndexScreen
 import com.example.camc_praktikum1.ui.screens.DataPlotScreen
 import com.example.camc_praktikum1.ui.screens.HomeScreen
+import com.example.camc_praktikum1.ui.screens.components.MyAppBar
 import com.example.camc_praktikum1.ui.theme.CAMCpraktikum1Theme
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -167,17 +167,14 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable(route = AppScreenData.Home.name) {
                                 HomeScreen(
-                                    onGotoSensorsClick = { navController.navigate(AppScreenData.AllSensors.name) },
+                                    onGotoSensorsClick = { navController.navigate(AppScreenData.CollectData.name) },
                                     onGotoDataClick = { navController.navigate(AppScreenData.Data.name) }
                                 )
-                            }
-                            composable(route = AppScreenData.AllSensors.name) {
-                                AllSensorsScreen()
                             }
                             composable(route = AppScreenData.Data.name) {
                                 DataIndexScreen(
                                     onShowPlotClick = { navController.navigate(AppScreenData.DataPlot.name) },
-                                    onGotoSensorsClick = { navController.navigate(AppScreenData.AllSensors.name) },
+                                    onGotoSensorsClick = { navController.navigate(AppScreenData.CollectData.name) },
                                     onExportClick = { data, fileName ->
                                         zipFileContent = data
                                         zipFileCreationLauncher.launch(fileName)

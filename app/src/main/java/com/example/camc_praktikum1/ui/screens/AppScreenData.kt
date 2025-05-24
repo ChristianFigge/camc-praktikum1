@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -20,10 +19,12 @@ enum class AppScreenData(
         title = "Home",
         icon = Icons.Default.Home,
     ),
+    /*
     AllSensors(
         title = "Alle Sensoren",
         icon = Icons.Default.Search,
     ),
+    */
     Data(
         title = "Daten",
         icon = Icons.Default.DateRange,

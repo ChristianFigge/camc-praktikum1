@@ -23,6 +23,7 @@ import com.example.camc_praktikum1.ui.screens.components.sensorpanel.SensorPanel
 import com.example.camc_praktikum1.viewmodel.SensorViewModel
 import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
 
+// Alter Screen aus praktikum 1, kann nicht mehr angesteuert werden. Nur noch drin als referenzcode
 
 @Composable
 fun AllSensorsScreen(

@@ -1,4 +1,4 @@
-package com.example.camc_praktikum1
+package com.example.camc_praktikum1.ui.screens.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack

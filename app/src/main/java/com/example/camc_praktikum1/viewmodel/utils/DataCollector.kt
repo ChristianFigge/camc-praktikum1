@@ -16,15 +16,18 @@ import java.io.IOException
 /**
  * Saves SensorEventData in a list.
  */
-open class DataCollector(private val sensorType: SensorTypeData) {
-    companion object {
+open class DataCollector(
+    private val sensorType: SensorTypeData
+) {
+    companion object { // static in kotlin
         private val _transportMode = mutableStateOf(TransportMode.Stillstand)
         var transportMode : TransportMode
             get() = _transportMode.value
             set(mode) { _transportMode.value = mode }
 
-        val syncDatum = FloatArray(3) { _ -> -1.0f }
+        val syncDatum = FloatArray(3) { _ -> 0.0f }
     }
+
     private val sensorName = sensorType.name
 
     private var _data = mutableListOf<SensorEventData>()
@@ -35,24 +38,21 @@ open class DataCollector(private val sensorType: SensorTypeData) {
     val hasData : Boolean
         get() = _hasData.value
 
-    private inline fun updateHasData() {
-        // assuming reading is faster than writing
-        if(!hasData)
-            _hasData.value = true
-    }
 
     fun collectDatum(sensorEvent: SensorEvent) {
         val newItem = SensorEventData(
             values = sensorEvent.values.clone(),
-            timestampMillis = System.currentTimeMillis(), //sensorEvent.timestamp, //System.currentTimeMillis()
+            timestampMillis = System.currentTimeMillis(), //sensorEvent.timestamp,
             mode = _transportMode.value.name,
         )
         _data.add(newItem)
-        updateHasData()
+
+        if(!hasData)
+            _hasData.value = true
     }
 
-    /*
-     * Adds a SYNC item to the data list. Does not work if listener is currently running.
+    /**
+     * Adds a SYNC item to the data list. Does not work if the listener is currently running.
      */
     fun saveSyncDatum(timestampMillis: Long) {
         if(!sensorType.isRunning.value) {
@@ -63,7 +63,6 @@ open class DataCollector(private val sensorType: SensorTypeData) {
             )
             _data.add(newItem)
         }
-        //updateHasData()
     }
 
     fun clearData() {
@@ -93,7 +92,7 @@ open class DataCollector(private val sensorType: SensorTypeData) {
         val metaData = RecordingMetaData(
             sensorName = sensorName,
             fileName = fileName,
-            createdAt = timeMs, //sdf.format(Date(timeMs)),
+            createdAt = timeMs,
             size = data.size,
             durationMs = data.last().timestampMillis - data.first().timestampMillis,
             sessionId = sessionId,
