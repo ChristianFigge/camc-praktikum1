@@ -1,10 +1,12 @@
 package com.example.camc_praktikum1.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -61,7 +63,10 @@ fun CollectDataScreen(
         ) {
             //items(TransportMode.entries.toList()) {
             TransportMode.entries.forEach {
-                Box(modifier = Modifier.height(40.dp)) {
+                Box(modifier = Modifier
+                    .height(40.dp).padding(end=10.dp)
+                    .clickable { viewModel.transportMode = it }
+                ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -69,7 +74,7 @@ fun CollectDataScreen(
                             selected = viewModel.transportMode == it,
                             onClick = { viewModel.transportMode = it }
                         )
-                        Text(it.name)
+                        Text("${it.name}    ")
                     }
                 }
             }
