@@ -121,7 +121,7 @@ fun DataIndexScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                "(${it.size} Events in ${it.durationMs} ms)\n" +
+                                "(${it.size} Events in ${it.durationMs / 1000} s)\n" +
                                         "SessionId: " + it.sessionId,
                                 style = MaterialTheme.typography.labelLarge
                             )

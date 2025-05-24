@@ -48,8 +48,8 @@ fun DataPlotPanel(
     var xPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
     var yPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
     var zPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
-    var magPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
-    var avrgPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
+    //var magPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
+    //var avrgPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
 
     // max/min für valuerange der y-Achse
     var maxVal = Float.MIN_VALUE
@@ -57,18 +57,17 @@ fun DataPlotPanel(
     val tFirst = data.first().timestampMillis
     data.forEachIndexed { i, data ->
         val t = ((data.timestampMillis - tFirst)).toFloat()
-        magPoints[i] = Point(t, getMagnitude(data.values))
-        avrgPoints[i] = Point(t, data.values.average().toFloat())
+        //magPoints[i] = Point(t, getMagnitude(data.values))
+        //avrgPoints[i] = Point(t, data.values.average().toFloat())
         xPoints[i] = Point(t, data.values[0])
         yPoints[i] = Point(t, data.values[1])
         zPoints[i] = Point(t, data.values[2])
-        avrgPoints
 
-        val possibleMax = max(magPoints[i].y, data.values.max())
+        val possibleMax = data.values.max() // max(magPoints[i].y, data.values.max())
         if (possibleMax > maxVal)
             maxVal = possibleMax
 
-        val possibleMin = min(magPoints[i].y, data.values.min())
+        val possibleMin = data.values.min() //min(magPoints[i].y, data.values.min())
         if(possibleMin < minVal)
             minVal = possibleMin
     }
@@ -105,7 +104,7 @@ fun DataPlotPanel(
                 ),
                 Line(
                     dataPoints = yPoints,
-                    LineStyle(color=Color.Blue),
+                    LineStyle(color=Color.Red),
                     intersectionPoint,
                     SelectionHighlightPoint(),
                     null, //ShadowUnderLine(),
@@ -113,12 +112,13 @@ fun DataPlotPanel(
                 ),
                 Line(
                     dataPoints = zPoints,
-                    LineStyle(color=Color.Blue),
+                    LineStyle(color=Color.Green),
                     intersectionPoint,
                     SelectionHighlightPoint(),
                     null, //ShadowUnderLine(),
                     SelectionHighlightPopUp()
                 ),
+                 /*
                 Line(
                     dataPoints = magPoints,
                     LineStyle(color=Color.Red),
@@ -135,6 +135,8 @@ fun DataPlotPanel(
                     null, //ShadowUnderLine(),
                     SelectionHighlightPopUp()
                 ),
+
+                  */
             ),
         ),
         xAxisData = xAxisData,
@@ -148,7 +150,8 @@ fun DataPlotPanel(
         Text(metaData!!.sensorName, style= MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(20.dp))
 
-        Text("\uD83D\uDD35 X|Y|Z  \uD83D\uDD34 Magnitude  \uD83D\uDFE2 Durchschnitt")
+        //Text("\uD83D\uDD35 X|Y|Z  \uD83D\uDD34 Magnitude  \uD83D\uDFE2 Durchschnitt")
+        Text("\uD83D\uDD35 X  \uD83D\uDD34 Y  \uD83D\uDFE2 Z")
         Spacer(Modifier.height(10.dp))
 
         LineChart(
@@ -160,6 +163,7 @@ fun DataPlotPanel(
 
         HorizontalDivider()
         Spacer(Modifier.height(30.dp))
+
         Text("JSON Data:\n\n$data")
 
     }
