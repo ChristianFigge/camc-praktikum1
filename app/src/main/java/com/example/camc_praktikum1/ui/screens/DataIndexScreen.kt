@@ -31,10 +31,12 @@ import com.example.camc_praktikum1.viewmodel.DataViewModel
 import java.util.Date
 import java.util.Locale
 
+
 @Composable
 fun DataIndexScreen(
     onShowPlotClick: () -> Unit,
     onGotoSensorsClick: () -> Unit,
+    onExportClick: (ByteArray, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val ctx = LocalContext.current
@@ -72,6 +74,17 @@ fun DataIndexScreen(
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = { onShowPlotClick() }
                 )
+            }
+            Row() {
+                Button(
+                    content = { Text("Export Test") },
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    onClick = {
+                        // TODO create actual export data
+                        onExportClick("asdasd".toByteArray(), "testfile.zip")
+                    }
+                )
+
             }
             Spacer(Modifier.height(20.dp))
             HorizontalDivider(thickness = 2.dp)

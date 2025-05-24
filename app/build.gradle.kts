@@ -61,4 +61,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.ycharts)
+    implementation(libs.androidx.activity.ktx)
 }
