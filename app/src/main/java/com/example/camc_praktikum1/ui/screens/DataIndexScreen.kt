@@ -69,7 +69,7 @@ fun DataIndexScreen(
                     }
                 )
                 Button(
-                    content = { Text("Graph anzeigen") },
+                    content = { Text("Plot anzeigen") },
                     enabled = selectedMetaData != null,
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = { onShowPlotClick() }

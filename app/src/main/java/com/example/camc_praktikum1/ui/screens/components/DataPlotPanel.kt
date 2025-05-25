@@ -2,13 +2,22 @@ package com.example.camc_praktikum1.ui.screens.components
 
 import android.content.Context
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -24,8 +33,8 @@ import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import com.example.camc_praktikum1.data.models.RecordingMetaData
+import com.example.camc_praktikum1.data.models.SensorEventData
 import com.example.camc_praktikum1.viewmodel.DataViewModel
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -37,41 +46,75 @@ fun DataPlotPanel(
     viewModel: DataViewModel,
     ctx: Context,
 ) {
-    var data = viewModel.loadRecordingFromFile(metaData, ctx)
+    val data = viewModel.loadRecordingFromFile(metaData, ctx)
 
     if(data.isNullOrEmpty()) {
         Text("Wähle einen anderen Datensatz!")
         return
     }
 
-    // calc müsste eigentlich ins viewmodel aber juckt gerade nicht
-    var xPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
-    var yPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
-    var zPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
-    //var magPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
-    //var avrgPoints = MutableList<Point>(data.size) { _ -> Point(0.0f, 0.0f) }
+    // TODO daten/logik ins viewmodel
+    // ++++++++++++++++++++++++++++ data/logic ++++++++++++++++++++++++++++++++++++
+    val PAGE_SIZE = min(500, data.size)
+    var page_offset by remember{ mutableIntStateOf(0) }
+    var limit_excl = page_offset + PAGE_SIZE
+    val xPoints = MutableList<Point>(PAGE_SIZE) { _ -> Point(0.0f, 0.0f) }
+    val yPoints = MutableList<Point>(PAGE_SIZE) { _ -> Point(0.0f, 0.0f) }
+    val zPoints = MutableList<Point>(PAGE_SIZE) { _ -> Point(0.0f, 0.0f) }
+
+    var dataView by remember { mutableStateOf(data.subList(0, PAGE_SIZE))}
 
     // max/min für valuerange der y-Achse
     var maxVal = Float.MIN_VALUE
     var minVal = Float.MAX_VALUE
-    val tFirst = data.first().timestampMillis
-    data.forEachIndexed { i, data ->
-        val t = ((data.timestampMillis - tFirst)).toFloat()
-        //magPoints[i] = Point(t, getMagnitude(data.values))
-        //avrgPoints[i] = Point(t, data.values.average().toFloat())
-        xPoints[i] = Point(t, data.values[0])
-        yPoints[i] = Point(t, data.values[1])
-        zPoints[i] = Point(t, data.values[2])
 
-        val possibleMax = data.values.max() // max(magPoints[i].y, data.values.max())
-        if (possibleMax > maxVal)
-            maxVal = possibleMax
+    fun setPlotPointsForCurrentPage() {
+        limit_excl =
+            if (page_offset + PAGE_SIZE > data.size) data.size
+            else page_offset + PAGE_SIZE
 
-        val possibleMin = data.values.min() //min(magPoints[i].y, data.values.min())
-        if(possibleMin < minVal)
-            minVal = possibleMin
+        var point_idx = 0
+        val tNull = data[page_offset].timestampMillis
+        for (data_idx in page_offset..< limit_excl) {
+            val d = data[data_idx]
+            val t = ((d.timestampMillis - tNull)).toFloat()
+
+            xPoints[point_idx] = Point(t, d.values[0])
+            yPoints[point_idx] = Point(t, d.values[1])
+            zPoints[point_idx] = Point(t, d.values[2])
+
+            val possibleMax = d.values.max()
+            if (possibleMax > maxVal)
+                maxVal = possibleMax
+
+            val possibleMin = d.values.min()
+            if(possibleMin < minVal)
+                minVal = possibleMin
+            point_idx++
+        }
+
+        // for last page, clear arrays from points of previous page if needed
+        if(point_idx < xPoints.size) {
+            // fill up array with last valid point
+            val lastX = xPoints[point_idx-1]
+            val lastY = yPoints[point_idx-1]
+            val lastZ = zPoints[point_idx-1]
+
+            for (i in point_idx..< xPoints.size) {
+                xPoints[i] = lastX
+                yPoints[i] = lastY
+                zPoints[i] = lastZ
+            }
+        }
+
+    }
+    setPlotPointsForCurrentPage()
+
+    fun getDataViewForCurrentPage(): List<SensorEventData> {
+        return data.subList(page_offset, limit_excl)
     }
 
+    // yCharts Axis Data
     val xAxisData = AxisData.Builder()
         .axisStepSize(1.dp) // 1.dp per ms
         .backgroundColor(Color.White)
@@ -90,6 +133,7 @@ fun DataPlotPanel(
             "%.1f".format(minVal + (yStep * i))
         }.build()
 
+    // yCharts LineChartData
     val intersectionPoint = IntersectionPoint(radius=3.dp)
     val lineChartData = LineChartData(
         linePlotData = LinePlotData(
@@ -135,8 +179,7 @@ fun DataPlotPanel(
                     null, //ShadowUnderLine(),
                     SelectionHighlightPopUp()
                 ),
-
-                  */
+                */
             ),
         ),
         xAxisData = xAxisData,
@@ -144,6 +187,9 @@ fun DataPlotPanel(
         gridLines = GridLines(),
         backgroundColor = Color.White
     )
+
+
+    // +++++++++++++++++++++++++++++ UI DEF +++++++++++++++++++++++++++++++++
     Column(){
 
         Spacer(Modifier.height(20.dp))
@@ -161,13 +207,46 @@ fun DataPlotPanel(
             lineChartData = lineChartData
         )
 
+        Spacer(Modifier.height(20.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Button(
+                content = { Text("<") },
+                enabled = page_offset - PAGE_SIZE >= 0,
+                modifier = Modifier.padding(horizontal = 10.dp),
+                onClick = {
+                    if(page_offset - PAGE_SIZE >= 0) {
+                        page_offset -= PAGE_SIZE // prev page
+                        setPlotPointsForCurrentPage()
+                        dataView = getDataViewForCurrentPage()
+                    }
+                }
+            )
+
+            Text("${page_offset}-${limit_excl}/${data.size}")
+
+            Button(
+                content = { Text(">") },
+                enabled = page_offset + PAGE_SIZE < data.size,
+                modifier = Modifier.padding(horizontal = 10.dp),
+                onClick = {
+                    if(page_offset + PAGE_SIZE < data.size) {
+                        page_offset += PAGE_SIZE // next page
+                        setPlotPointsForCurrentPage()
+                        dataView = getDataViewForCurrentPage()
+                    }
+                }
+            )
+        }
+
+        Spacer(Modifier.height(20.dp))
         HorizontalDivider()
         Spacer(Modifier.height(30.dp))
 
-        Text("JSON Data:\n\n$data")
-
+        Text("JSON Data:\n\n${dataView}")
     }
-
 }
 
 /**
