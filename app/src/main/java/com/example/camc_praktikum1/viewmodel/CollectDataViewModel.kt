@@ -2,6 +2,7 @@ package com.example.camc_praktikum1.viewmodel
 
 import android.content.Context
 import android.hardware.SensorManager
+import android.os.PowerManager
 import com.example.camc_praktikum1.viewmodel.utils.SensorTypeData
 import com.example.camc_praktikum1.viewmodel.utils.TransportMode
 import android.util.Log
@@ -10,6 +11,7 @@ import com.example.camc_praktikum1.viewmodel.utils.DataCollector
 
 class CollectDataViewModel private constructor (
     sensorManager: SensorManager,
+    powerManager: PowerManager,
 ):
     SensorViewModel(sensorManager)
 {
@@ -20,7 +22,8 @@ class CollectDataViewModel private constructor (
         fun getInstance(ctx: Context) =
             instance ?: synchronized(this) {
                 val sensorMan = ctx.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-                CollectDataViewModel(sensorMan).also { instance = it }
+                val powerMan = ctx.getSystemService(Context.POWER_SERVICE) as PowerManager
+                CollectDataViewModel(sensorMan, powerMan).also { instance = it }
             }
     }
 
@@ -35,6 +38,8 @@ class CollectDataViewModel private constructor (
     val noSensorIsSelected: Boolean
         get() = sensorSelectionFlags.intValue == 0
 
+    private lateinit var wakeLock : PowerManager.WakeLock
+
     init {
         // init sensor selection flags for ui
         SensorTypeData.entries.forEach {
@@ -42,10 +47,18 @@ class CollectDataViewModel private constructor (
                 setSensorSelectionFlag(it)
             }
         }
+
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "CollectDataViewModel::CollectingWakeLock"
+        )
     }
 
     fun startSelectedSensors() {
         val nowMillis = System.currentTimeMillis()
+
+        wakeLock.acquire(30*60*1000L /*30 minutes*/)
+
         SensorTypeData.entries.forEach {
             if(it.isSelected.value) {
                 it.listener!!.value.saveSyncDatum(nowMillis)
@@ -62,6 +75,7 @@ class CollectDataViewModel private constructor (
                 it.listener!!.value.saveSyncDatum(nowMillis)
             }
         }
+        wakeLock.release()
     }
 
 

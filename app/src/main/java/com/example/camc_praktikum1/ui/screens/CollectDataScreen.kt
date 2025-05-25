@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.RadioButton
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -102,7 +104,7 @@ fun CollectDataScreen(
                     val btnText =
                         if (viewModel.noSensorIsRunning) "Daten\nsammeln"
                         else "Sammeln\nstoppen"
-                    Text(btnText, textAlign = TextAlign.Center)
+                    Text(btnText, textAlign = TextAlign.Center, color = Color.Black)
                 },
                 onClick = {
                     if (viewModel.noSensorIsRunning)
@@ -110,7 +112,11 @@ fun CollectDataScreen(
                     else
                         viewModel.stopAllRunningSensors()
                 },
-                enabled = !(viewModel.noSensorIsRunning && (viewModel.noSensorIsSelected || anySensorHasData()))
+                enabled = !(viewModel.noSensorIsRunning && (viewModel.noSensorIsSelected || anySensorHasData())),
+                colors= ButtonDefaults.buttonColors(
+                    containerColor = if(!viewModel.noSensorIsRunning) Color.Red else Color.Unspecified
+                )
+
             )
         }
         Spacer(Modifier.height(20.dp))
